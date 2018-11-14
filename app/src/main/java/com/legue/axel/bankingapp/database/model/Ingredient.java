@@ -1,11 +1,17 @@
 package com.legue.axel.bankingapp.database.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-@Entity()
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
+@Entity(foreignKeys = @ForeignKey(entity = Recipe.class,
+        parentColumns = "id",
+        childColumns = "recipeId",
+        onDelete = CASCADE))
 public class Ingredient {
 
     @PrimaryKey(autoGenerate = true)
@@ -14,12 +20,14 @@ public class Ingredient {
     private String measure;
     @SerializedName("ingredient")
     private String name;
+    private int recipeId;
 
-    public Ingredient(int id, int quantity, String measure, String name) {
+    public Ingredient(int id, int quantity, String measure, String name, int recipeId) {
         this.id = id;
         this.quantity = quantity;
         this.measure = measure;
         this.name = name;
+        this.recipeId = recipeId;
     }
 
     public int getId() {
@@ -52,5 +60,13 @@ public class Ingredient {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getRecipeId() {
+        return recipeId;
+    }
+
+    public void setRecipeId(int recipeId) {
+        this.recipeId = recipeId;
     }
 }

@@ -23,6 +23,7 @@ public abstract class BakingDatabase extends RoomDatabase {
     private static BakingDatabase sInstance;
 
     public static BakingDatabase getsInstance(Context context) {
+        Log.d(TAG, "getInstance db");
         if (sInstance == null) {
             synchronized (LOCK) {
                 Log.d(TAG, "Creation of database");

@@ -1,11 +1,17 @@
 package com.legue.axel.bankingapp.database.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-@Entity()
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
+@Entity(foreignKeys = @ForeignKey(entity = Recipe.class,
+        parentColumns = "id",
+        childColumns = "recipeId",
+        onDelete = CASCADE))
 public class Step {
     @PrimaryKey()
     private int id;
@@ -13,13 +19,15 @@ public class Step {
     private String description;
     private String videoURL;
     private String thumbnailURL;
+    private int recipeId;
 
-    public Step(int id, String shortDescription, String description, String videoURL, String thumbnailURL) {
+    public Step(int id, String shortDescription, String description, String videoURL, String thumbnailURL, int recipeId) {
         this.id = id;
         this.shortDescription = shortDescription;
         this.description = description;
         this.videoURL = videoURL;
         this.thumbnailURL = thumbnailURL;
+        this.recipeId = recipeId;
     }
 
     public int getId() {
@@ -60,5 +68,13 @@ public class Step {
 
     public void setThumbnailURL(String thumbnailURL) {
         this.thumbnailURL = thumbnailURL;
+    }
+
+    public int getRecipeId() {
+        return recipeId;
+    }
+
+    public void setRecipeId(int recipeId) {
+        this.recipeId = recipeId;
     }
 }

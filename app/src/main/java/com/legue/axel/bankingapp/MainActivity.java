@@ -14,10 +14,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        initialiseDatabase();
+        initialiseDatabase();
     }
 
     private void initialiseDatabase() {
-//        database = BakingDatabase.getsInstance(this);
+        database = BakingDatabase.getsInstance(this);
     }
 }
