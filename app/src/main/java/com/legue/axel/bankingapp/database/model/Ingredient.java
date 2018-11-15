@@ -22,6 +22,7 @@ public class Ingredient {
     private String name;
     private int recipeId;
 
+
     public Ingredient(int id, int quantity, String measure, String name, int recipeId) {
         this.id = id;
         this.quantity = quantity;
