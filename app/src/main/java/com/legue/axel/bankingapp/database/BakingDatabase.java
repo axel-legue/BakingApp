@@ -13,7 +13,7 @@ import com.legue.axel.bankingapp.database.model.Ingredient;
 import com.legue.axel.bankingapp.database.model.Recipe;
 import com.legue.axel.bankingapp.database.model.Step;
 
-@Database(entities = {Recipe.class, Ingredient.class, Step.class}, version = 1, exportSchema = false)
+@Database(entities = {Recipe.class, Ingredient.class, Step.class}, version = 2, exportSchema = false)
 public abstract class BakingDatabase extends RoomDatabase {
 
     private static String TAG = BakingDatabase.class.getName();

@@ -35,8 +35,11 @@ public interface IngredientDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateIngredient(Ingredient ingredient);
 
+    @Query("SELECT * FROM Ingredient WHERE recipeId =:recipeId")
+    LiveData<List<Ingredient>> getIngredientsByRecipeId(int recipeId);
+
     @Query("SELECT Ingredient.*,Recipe.id as recipe_id, Recipe.title as recipe_title, Recipe.servings as recipe_servings, Recipe.image as recipe_image FROM Recipe LEFT OUTER JOIN Ingredient ON Recipe.id == Ingredient.id WHERE Recipe.id = :recipeId")
-    LiveData<RecipeIngredient> getRecipeIngredients(int recipeId);
+    LiveData<List<RecipeIngredient>> getRecipeIngredients(int recipeId);
 
     class RecipeIngredient {
         @Embedded(prefix = "recipe_")

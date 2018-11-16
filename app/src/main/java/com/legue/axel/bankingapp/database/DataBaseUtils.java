@@ -135,14 +135,14 @@ public class DataBaseUtils {
     private Ingredient createIngredient(JSONObject jsonObject, int recipeId) {
         // TODO : check ID for Ingredient
         int id = 0;
-        int quantity = -1;
+        double quantity = -1;
         String measure = null;
         String name = null;
 
 
         try {
             if (jsonObject.has(Constants.KEY_QUANTITY)) {
-                quantity = jsonObject.getInt(Constants.KEY_QUANTITY);
+                quantity = jsonObject.getDouble(Constants.KEY_QUANTITY);
             }
             if (jsonObject.has(Constants.KEY_MEASURE)) {
                 measure = jsonObject.getString(Constants.KEY_MEASURE);

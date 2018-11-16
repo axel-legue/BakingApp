@@ -1,6 +1,5 @@
 package com.legue.axel.bankingapp;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -14,9 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.legue.axel.bankingapp.adapter.RecipeAdapter;
 import com.legue.axel.bankingapp.database.BakingDatabase;
-import com.legue.axel.bankingapp.database.RecipeAdapter;
-import com.legue.axel.bankingapp.database.RecipeViewModel;
+import com.legue.axel.bankingapp.database.ViewModel.RecipeViewModel;
 import com.legue.axel.bankingapp.database.model.Recipe;
 
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class RecipeFragment extends Fragment {
 
     private final static String TAG = RecipeFragment.class.getName();
 
-
+    private Unbinder unbinder;
     @BindView(R.id.rv_recipe)
     RecyclerView mRecipeRecyclerView;
 
@@ -47,8 +46,6 @@ public class RecipeFragment extends Fragment {
             Log.i(TAG, "recipeSelected: " + recipe.getTitle());
         }
     };
-
-    private Unbinder unbinder;
 
     public RecipeFragment() {
     }
@@ -67,10 +64,10 @@ public class RecipeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initDate();
+        initData();
     }
 
-    private void initDate() {
+    private void initData() {
         mContext = getActivity();
         mDatabase = BakingDatabase.getsInstance(mContext);
 

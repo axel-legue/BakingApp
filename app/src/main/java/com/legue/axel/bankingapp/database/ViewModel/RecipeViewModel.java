@@ -1,10 +1,11 @@
-package com.legue.axel.bankingapp.database;
+package com.legue.axel.bankingapp.database.ViewModel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
+import com.legue.axel.bankingapp.database.BakingDatabase;
 import com.legue.axel.bankingapp.database.model.Recipe;
 
 import java.util.List;

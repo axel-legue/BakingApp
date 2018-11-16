@@ -1,4 +1,4 @@
-package com.legue.axel.bankingapp.database;
+package com.legue.axel.bankingapp.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
