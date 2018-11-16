@@ -20,12 +20,6 @@ android {
             enable true
             compatibleScreens 'small', 'normal', 'large', 'xlarge'
         }
-        abi {
-            enable true
-            reset()
-            include "x86", "x86_64"
-        }
-
     }
     buildTypes {
         release {
