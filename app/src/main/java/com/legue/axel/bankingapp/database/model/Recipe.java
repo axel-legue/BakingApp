@@ -1,5 +1,6 @@
 package com.legue.axel.bankingapp.database.model;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
@@ -10,29 +11,26 @@ import com.google.gson.annotations.SerializedName;
 public class Recipe {
 
     @PrimaryKey()
-    private int id;
+    @ColumnInfo(name = "id")
+    private int recipeId;
     @SerializedName("name")
     private String title;
     private int servings;
     private String image;
 
-    @Ignore
-    public Recipe() {
-    }
-
-    public Recipe(int id, String title, int servings, String image) {
-        this.id = id;
+    public Recipe(int recipeId, String title, int servings, String image) {
+        this.recipeId = recipeId;
         this.title = title;
         this.servings = servings;
         this.image = image;
     }
 
-    public int getId() {
-        return id;
+    public int getRecipeId() {
+        return recipeId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setRecipeId(int recipeId) {
+        this.recipeId = recipeId;
     }
 
     public String getTitle() {

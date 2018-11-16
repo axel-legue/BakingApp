@@ -35,14 +35,7 @@ public interface StepDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateStep(Step step);
 
-    @Query("SELECT Step.*,Recipe.id as recipe_id, Recipe.title as recipe_title, Recipe.servings as recipe_servings, Recipe.image as recipe_image FROM Recipe LEFT OUTER JOIN Step ON Recipe.id == Step.id WHERE Recipe.id = :recipeId")
-    LiveData<RecipeStep> getRecipeSteps(int recipeId);
-
-    class RecipeStep {
-        @Embedded(prefix = "recipe_")
-        Recipe recipe;
-        @Embedded
-        Step step;
-    }
+    @Query("SELECT * FROM step WHERE recipe_id = :recipeId")
+    LiveData<List<Step>> getRecipeSteps(int recipeId);
 
 }

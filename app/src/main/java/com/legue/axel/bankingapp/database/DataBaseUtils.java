@@ -32,6 +32,9 @@ public class DataBaseUtils {
     }
 
     public void fillDatabase() {
+        recipes = new ArrayList<>();
+        ingredients = new ArrayList<>();
+        steps = new ArrayList<>();
         String jsonString;
         try {
             InputStream inputStream = mContext.getAssets().open("baking.json");
@@ -59,7 +62,7 @@ public class DataBaseUtils {
 
 
     private void insertRecipes(JSONArray jsonArray) {
-        recipes = new ArrayList<>();
+
         try {
             for (int i = 0; i < jsonArray.length(); i++) {
                 recipes.add(createRecipe(jsonArray.getJSONObject(i)));
@@ -70,7 +73,7 @@ public class DataBaseUtils {
     }
 
     private void insertIngredients(JSONArray jsonArray, int recipeId) {
-        ingredients = new ArrayList<>();
+
         try {
             for (int i = 0; i < jsonArray.length(); i++) {
                 ingredients.add(createIngredient(jsonArray.getJSONObject(i), recipeId));
@@ -83,7 +86,7 @@ public class DataBaseUtils {
 
 
     private void insertSteps(JSONArray jsonArray, int recipeId) {
-        steps = new ArrayList<>();
+
         try {
             for (int i = 0; i < jsonArray.length(); i++) {
                 steps.add(createStep(jsonArray.getJSONObject(i), recipeId));
@@ -133,16 +136,15 @@ public class DataBaseUtils {
     }
 
     private Ingredient createIngredient(JSONObject jsonObject, int recipeId) {
-        // TODO : check ID for Ingredient
         int id = 0;
-        int quantity = -1;
+        double quantity = -1;
         String measure = null;
         String name = null;
 
 
         try {
             if (jsonObject.has(Constants.KEY_QUANTITY)) {
-                quantity = jsonObject.getInt(Constants.KEY_QUANTITY);
+                quantity = jsonObject.getDouble(Constants.KEY_QUANTITY);
             }
             if (jsonObject.has(Constants.KEY_MEASURE)) {
                 measure = jsonObject.getString(Constants.KEY_MEASURE);
@@ -157,16 +159,13 @@ public class DataBaseUtils {
     }
 
     private Step createStep(JSONObject jsonObject, int recipeId) {
-        int id = -1;
+        int id = 0;
         String shortDescription = null;
         String description = null;
         String videoURL = null;
         String thumbnailURL = null;
 
         try {
-            if (jsonObject.has(Constants.KEY_STEPS_ID)) {
-                id = jsonObject.getInt(Constants.KEY_STEPS_ID);
-            }
             if (jsonObject.has(Constants.KEY_STEPS_SHORT_DESCRIPTION)) {
                 shortDescription = jsonObject.getString(Constants.KEY_STEPS_SHORT_DESCRIPTION);
             }
