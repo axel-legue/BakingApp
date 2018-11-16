@@ -41,4 +41,5 @@ ext {
     rxAndroidVersion = '2.0.1'
     lifecycleVersion = '1.1.1'
     roomVersion = '1.1.1'
+    roundedImageView = '2.3.0'
 }

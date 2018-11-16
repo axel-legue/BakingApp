@@ -32,6 +32,8 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:$rootProject.ext.constraintLayoutVersion"
     // Picasso dependencies
     implementation "com.squareup.picasso:picasso:$rootProject.ext.picassoVersion"
+    // RoundedImageView dependencies
+    implementation "com.makeramen:roundedimageview:$rootProject.ext.roundedImageView"
     // Retrofit dependencies
     implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofit2Version"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofit2Version"

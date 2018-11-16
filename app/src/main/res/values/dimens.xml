@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="corner_radius">10dp</dimen>
+    <dimen name="card_max_elevation">8dp</dimen>
+    <dimen name="recipe_image_view">150dp</dimen>
+</resources>
