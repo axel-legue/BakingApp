@@ -1,29 +1,28 @@
 package com.legue.axel.bankingapp.database.model;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
-
-import com.google.gson.annotations.SerializedName;
-
-import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(foreignKeys = @ForeignKey(entity = Recipe.class,
         parentColumns = "id",
-        childColumns = "recipeId",
-        onDelete = CASCADE))
+        childColumns = "recipe_id",
+        onDelete = ForeignKey.CASCADE))
 public class Step {
-    @PrimaryKey()
-    private int id;
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    private int stepId;
     private String shortDescription;
     private String description;
     private String videoURL;
     private String thumbnailURL;
+
+    @ColumnInfo(name = "recipe_id")
     private int recipeId;
 
-    public Step(int id, String shortDescription, String description, String videoURL, String thumbnailURL, int recipeId) {
-        this.id = id;
+    public Step(int stepId, String shortDescription, String description, String videoURL, String thumbnailURL, int recipeId) {
+        this.stepId = stepId;
         this.shortDescription = shortDescription;
         this.description = description;
         this.videoURL = videoURL;
@@ -31,12 +30,12 @@ public class Step {
         this.recipeId = recipeId;
     }
 
-    public int getId() {
-        return id;
+    public int getStepId() {
+        return stepId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setStepId(int stepId) {
+        this.stepId = stepId;
     }
 
     public String getShortDescription() {

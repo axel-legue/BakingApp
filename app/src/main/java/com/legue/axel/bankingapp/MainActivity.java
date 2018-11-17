@@ -1,36 +1,26 @@
 package com.legue.axel.bankingapp;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.legue.axel.bankingapp.database.BakingDatabase;
 import com.legue.axel.bankingapp.database.DataBaseUtils;
-import com.legue.axel.bankingapp.database.RecipeAdapter;
-import com.legue.axel.bankingapp.database.RecipeViewModel;
-import com.legue.axel.bankingapp.database.model.Recipe;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecipeFragment.RecipeListener, StepsFragment.StepListener {
 
     private static final String TAG = MainActivity.class.getName();
 
     private BakingDatabase mDatabase;
 
     private RecipeFragment recipeFragment;
+    private StepsFragment stepsFragment;
     private FragmentManager fragmentManager;
 
     @BindView(R.id.recipe_container)
@@ -58,8 +48,39 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .add(R.id.recipe_container, recipeFragment)
                 .commit();
-
     }
 
+    private void initStepFragment(int recipeId) {
 
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.KEY_RECIPE_ID, recipeId);
+        stepsFragment = new StepsFragment();
+        stepsFragment.setArguments(bundle);
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.recipe_container, stepsFragment)
+                .addToBackStack(Constants.FRAGMENT_STEPS)
+                .commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            super.onBackPressed();
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
+    }
+
+    @Override
+    public void onRecipeSelected(int recipeId) {
+        Log.i(TAG, "onRecipeSelected: Activity");
+        initStepFragment(recipeId);
+    }
+
+    @Override
+    public void setpSelected(int stepId) {
+        Log.i(TAG, "setpSelected: Activity");
+        //TODO : Implement View Recipe Step
+    }
 }
