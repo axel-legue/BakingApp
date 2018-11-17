@@ -3,6 +3,7 @@ package com.legue.axel.bankingapp;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.legue.axel.bankingapp.database.BakingDatabase;
@@ -12,7 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecipeFragment.RecipeListener {
 
     private static final String TAG = MainActivity.class.getName();
 
@@ -38,8 +39,7 @@ public class MainActivity extends AppCompatActivity {
         DataBaseUtils dataBaseUtils = new DataBaseUtils(this, mDatabase);
         dataBaseUtils.fillDatabase();
 
-//        initRecipeFragment();
-        initStepFragment();
+        initRecipeFragment();
     }
 
     private void initRecipeFragment() {
@@ -50,14 +50,23 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    private void initStepFragment(){
+    private void initStepFragment(int recipeId) {
+
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.KEY_RECIPE_ID, recipeId);
         stepsFragment = new StepsFragment();
+        stepsFragment.setArguments(bundle);
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .add(R.id.recipe_container, stepsFragment)
+                .replace(R.id.recipe_container, stepsFragment)
                 .commit();
 
     }
 
 
+    @Override
+    public void onRecipeSelected(int recipeId) {
+        Log.i(TAG, "onRecipeSelected: Activity");
+        initStepFragment(recipeId);
+    }
 }

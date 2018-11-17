@@ -1,6 +1,5 @@
 package com.legue.axel.bankingapp;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -9,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +17,9 @@ import android.widget.TextView;
 
 import com.legue.axel.bankingapp.adapter.IngredientsAdapter;
 import com.legue.axel.bankingapp.database.ViewModel.IngredientViewModel;
-import com.legue.axel.bankingapp.database.dao.IngredientDao;
+import com.legue.axel.bankingapp.database.ViewModel.StepViewModel;
 import com.legue.axel.bankingapp.database.model.Ingredient;
+import com.legue.axel.bankingapp.database.model.Step;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public class StepsFragment extends Fragment {
+
+    private final static String TAG = StepsFragment.class.getName();
 
     private Unbinder unbinder;
     @BindView(R.id.iv_recipe)
@@ -52,6 +55,9 @@ public class StepsFragment extends Fragment {
     private List<Ingredient> ingredientList;
     private IngredientViewModel ingredientViewModel;
 
+    private List<Step> stepList;
+    private StepViewModel stepViewModel;
+
     private IngredientsAdapter ingredientsAdapter;
 
 
@@ -65,8 +71,8 @@ public class StepsFragment extends Fragment {
 
         if (getArguments() != null && getArguments().containsKey(Constants.KEY_RECIPE_ID)) {
             recipeId = getArguments().getInt(Constants.KEY_RECIPE_ID);
-        }else{
-            recipeId = 1;
+        } else {
+            recipeId = -1;
         }
         unbinder = ButterKnife.bind(this, view);
         return view;
@@ -90,14 +96,23 @@ public class StepsFragment extends Fragment {
         mIngredientsRecyclerView.setHasFixedSize(true);
 
         ingredientViewModel = ViewModelProviders.of(this).get(IngredientViewModel.class);
-        ingredientViewModel.getAllIngredientList().observe(this, new Observer<List<Ingredient>>() {
-            @Override
-            public void onChanged(@Nullable List<Ingredient> ingredients) {
-                if(ingredients != null){
-                    ingredientList.clear();
-                    ingredientList.addAll(ingredients);
-                    ingredientsAdapter.notifyDataSetChanged();
-                }
+        Log.i(TAG, "recipeId for request database is :  " + recipeId);
+        ingredientViewModel.getRecipeIngredients(recipeId).observe(this, ingredients -> {
+            if (ingredients != null) {
+                // TODO : Add ProgressBar
+                ingredientList.clear();
+                ingredientList.addAll(ingredients);
+                ingredientsAdapter.notifyDataSetChanged();
+            }
+        });
+
+        stepViewModel = ViewModelProviders.of(this).get(StepViewModel.class);
+        stepViewModel.getRecipeSteps(recipeId).observe(this, steps -> {
+            if (steps != null) {
+                // TODO : Add ProgressBar
+                stepList.clear();
+                stepList.addAll(steps);
+                // TODO : AUpdate Step Adapter
             }
         });
 

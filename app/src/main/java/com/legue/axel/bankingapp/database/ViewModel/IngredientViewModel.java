@@ -6,17 +6,14 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 import com.legue.axel.bankingapp.database.BakingDatabase;
-import com.legue.axel.bankingapp.database.dao.IngredientDao;
 import com.legue.axel.bankingapp.database.model.Ingredient;
-
 
 import java.util.List;
 
 public class IngredientViewModel extends AndroidViewModel {
 
-    BakingDatabase database;
-    LiveData<List<Ingredient>> ingredientList;
-    LiveData<List<Ingredient>> allIngredientList;
+    private BakingDatabase database;
+    private LiveData<List<Ingredient>> allIngredientList;
 
     public IngredientViewModel(@NonNull Application application) {
         super(application);
@@ -24,12 +21,12 @@ public class IngredientViewModel extends AndroidViewModel {
         allIngredientList = database.ingredientDao().getAllIngredient();
     }
 
-    public LiveData<List<Ingredient>> getIngredientListByRecipeId(int recipeId) {
-        return database.ingredientDao().getIngredientsByRecipeId(recipeId);
-    }
-
     public LiveData<List<Ingredient>> getAllIngredientList() {
         return allIngredientList;
+    }
+
+    public LiveData<List<Ingredient>> getRecipeIngredients(int recipeId) {
+        return database.ingredientDao().getRecipeIngredients(recipeId);
     }
 
 

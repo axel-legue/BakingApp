@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,12 +39,11 @@ public class RecipeFragment extends Fragment {
     private RecipeAdapter recipeAdapter;
     private Context mContext;
 
-    RecipeAdapter.RecipeListener recipeListener = new RecipeAdapter.RecipeListener() {
-        @Override
-        public void recipeSelected(Recipe recipe) {
-            Log.i(TAG, "recipeSelected: " + recipe.getTitle());
-        }
-    };
+    private RecipeListener recipeListener;
+
+    public interface RecipeListener {
+        void onRecipeSelected(int recipeId);
+    }
 
     public RecipeFragment() {
     }
@@ -67,6 +65,19 @@ public class RecipeFragment extends Fragment {
         initData();
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // Check if the onRecipeSelected listener is implemented
+        try {
+            recipeListener = (RecipeListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " Must implement onRecipeSelected");
+        }
+    }
+
     private void initData() {
         mContext = getActivity();
         mDatabase = BakingDatabase.getsInstance(mContext);
@@ -83,6 +94,7 @@ public class RecipeFragment extends Fragment {
         recipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
         recipeViewModel.getRecipeList().observe(this, recipes -> {
             if (recipes != null && recipes.size() > 0) {
+                // TODO : Add ProgressBar
                 recipeList.clear();
                 recipeList.addAll(recipes);
                 recipeAdapter.notifyDataSetChanged();

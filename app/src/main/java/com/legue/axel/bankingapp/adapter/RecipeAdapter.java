@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.legue.axel.bankingapp.R;
+import com.legue.axel.bankingapp.RecipeFragment;
 import com.legue.axel.bankingapp.database.model.Recipe;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
@@ -22,16 +24,13 @@ import butterknife.ButterKnife;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHolder> {
 
+    private final static String TAG = RecipeAdapter.class.getName();
     private Context mContext;
     private List<Recipe> recipeList;
-    private RecipeListener recipeListener;
-
-    public interface RecipeListener {
-        void recipeSelected(Recipe recipe);
-    }
+    private RecipeFragment.RecipeListener recipeListener;
 
 
-    public RecipeAdapter(Context mContext, List<Recipe> recipeList, RecipeListener recipeListener) {
+    public RecipeAdapter(Context mContext, List<Recipe> recipeList, RecipeFragment.RecipeListener recipeListener) {
         this.mContext = mContext;
         this.recipeList = recipeList;
         this.recipeListener = recipeListener;
@@ -51,7 +50,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
 
         recipeHolder.mRecipeName.setText(recipe.getTitle());
         recipeHolder.mRecipeServings.setText(String.valueOf(recipe.getServings()));
-        recipeHolder.cardView.setOnClickListener(view -> recipeListener.recipeSelected(recipe));
+        recipeHolder.cardView.setOnClickListener(view -> {
+            Log.i(TAG, "recipe selected:  " + recipe.getRecipeId());
+            recipeListener.onRecipeSelected(recipe.getRecipeId());
+        });
 
         switch (recipe.getTitle()) {
             case "Nutella Pie":

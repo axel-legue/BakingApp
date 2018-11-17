@@ -39,8 +39,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     public void onBindViewHolder(@NonNull IngredientHolder ingredientHolder, int position) {
         final Ingredient ingredient = ingredientList.get(position);
         String measure = null;
-        String quantity = null;
-        String name = null;
+        String quantity;
+        String name;
 
         if (ingredient.getMeasure() != null && ingredient.getMeasure().length() > 0) {
             if (Constants.measureMap.containsKey(ingredient.getMeasure())) {
@@ -65,11 +65,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         return ingredientList.size();
     }
 
-    public class IngredientHolder extends RecyclerView.ViewHolder {
+    class IngredientHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tv_ingredient_card)
         TextView ingredient;
 
-        public IngredientHolder(@NonNull View itemView) {
+        IngredientHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
