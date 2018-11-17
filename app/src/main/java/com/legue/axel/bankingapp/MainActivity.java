@@ -59,14 +59,22 @@ public class MainActivity extends AppCompatActivity implements RecipeFragment.Re
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.recipe_container, stepsFragment)
+                .addToBackStack(Constants.FRAGMENT_STEPS)
                 .commit();
-
     }
-
 
     @Override
     public void onRecipeSelected(int recipeId) {
         Log.i(TAG, "onRecipeSelected: Activity");
         initStepFragment(recipeId);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            super.onBackPressed();
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
     }
 }

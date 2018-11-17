@@ -1,5 +1,6 @@
 package com.legue.axel.bankingapp;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -17,9 +18,12 @@ import android.widget.TextView;
 
 import com.legue.axel.bankingapp.adapter.IngredientsAdapter;
 import com.legue.axel.bankingapp.database.ViewModel.IngredientViewModel;
+import com.legue.axel.bankingapp.database.ViewModel.RecipeViewModel;
 import com.legue.axel.bankingapp.database.ViewModel.StepViewModel;
 import com.legue.axel.bankingapp.database.model.Ingredient;
+import com.legue.axel.bankingapp.database.model.Recipe;
 import com.legue.axel.bankingapp.database.model.Step;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +62,9 @@ public class StepsFragment extends Fragment {
     private List<Step> stepList;
     private StepViewModel stepViewModel;
 
+    private RecipeViewModel recipeViewModel;
+    private Recipe recipeSelected;
+
     private IngredientsAdapter ingredientsAdapter;
 
 
@@ -84,11 +91,29 @@ public class StepsFragment extends Fragment {
         initData();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
+
     private void initData() {
+
         mContext = getActivity();
         if (ingredientList == null) {
             ingredientList = new ArrayList<>();
         }
+        if (stepList == null) {
+            stepList = new ArrayList<>();
+        }
+
+        recipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
+        recipeViewModel.getRecipeById(recipeId).observe(this, recipe -> {
+            if (recipe != null) {
+                recipeSelected = recipe;
+                displayRecipeInfo(recipeSelected);
+            }
+        });
 
         ingredientsAdapter = new IngredientsAdapter(mContext, ingredientList);
         mIngredientsRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
@@ -116,6 +141,38 @@ public class StepsFragment extends Fragment {
             }
         });
 
+    }
 
+    private void displayRecipeInfo(Recipe recipe) {
+        switch (recipe.getTitle()) {
+            case "Nutella Pie":
+                loadImage(R.drawable.nutella_pie);
+                break;
+            case "Brownies":
+                loadImage(R.drawable.brownies);
+                break;
+            case "Yellow Cake":
+                loadImage(R.drawable.yellow_cake);
+                break;
+            case "Cheesecake":
+                loadImage(R.drawable.cheese_cake);
+                break;
+            default:
+                loadImage(R.drawable.placeholder_image);
+                break;
+        }
+
+        String servingsString = mContext.getString(R.string.servings, recipe.getServings());
+        mRecipeServings.setText(servingsString);
+        mRecipeTitle.setText(recipe.getTitle());
+        //TODO : ADD Method for displaying difficulty ( start) depending on the step number
+    }
+
+    private void loadImage(int drawable) {
+        Picasso.with(mContext)
+                .load(drawable)
+                .error(R.drawable.placeholder_image)
+                .placeholder(R.drawable.placeholder_image)
+                .into(mRecipeImage);
     }
 }
