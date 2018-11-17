@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.legue.axel.bankingapp.R;
+import com.legue.axel.bankingapp.StepsFragment;
 import com.legue.axel.bankingapp.database.model.Step;
 
 import java.util.List;
@@ -21,10 +22,13 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepHolder> {
 
     private Context mContext;
     private List<Step> stepList;
+    private StepsFragment.StepListener stepListener;
 
-    public StepAdapter(Context mContext, List<Step> stepList) {
+
+    public StepAdapter(Context mContext, List<Step> stepList, StepsFragment.StepListener stepListener) {
         this.mContext = mContext;
         this.stepList = stepList;
+        this.stepListener = stepListener;
     }
 
     @NonNull
@@ -40,6 +44,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepHolder> {
 
         String stepDescription = mContext.getString(R.string.step_card, i + 1, step.getShortDescription());
         stepHolder.stepShortDescription.setText(stepDescription);
+        stepHolder.cardViewStep.setOnClickListener(view -> stepListener.setpSelected(step.getStepId()));
 
     }
 

@@ -13,7 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class MainActivity extends AppCompatActivity implements RecipeFragment.RecipeListener {
+public class MainActivity extends AppCompatActivity implements RecipeFragment.RecipeListener, StepsFragment.StepListener {
 
     private static final String TAG = MainActivity.class.getName();
 
@@ -64,17 +64,23 @@ public class MainActivity extends AppCompatActivity implements RecipeFragment.Re
     }
 
     @Override
-    public void onRecipeSelected(int recipeId) {
-        Log.i(TAG, "onRecipeSelected: Activity");
-        initStepFragment(recipeId);
-    }
-
-    @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             super.onBackPressed();
         } else {
             getSupportFragmentManager().popBackStack();
         }
+    }
+
+    @Override
+    public void onRecipeSelected(int recipeId) {
+        Log.i(TAG, "onRecipeSelected: Activity");
+        initStepFragment(recipeId);
+    }
+
+    @Override
+    public void setpSelected(int stepId) {
+        Log.i(TAG, "setpSelected: Activity");
+        //TODO : Implement View Recipe Step
     }
 }

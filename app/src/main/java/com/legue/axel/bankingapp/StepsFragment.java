@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.legue.axel.bankingapp.adapter.IngredientsAdapter;
+import com.legue.axel.bankingapp.adapter.StepAdapter;
 import com.legue.axel.bankingapp.database.ViewModel.IngredientViewModel;
 import com.legue.axel.bankingapp.database.ViewModel.RecipeViewModel;
 import com.legue.axel.bankingapp.database.ViewModel.StepViewModel;
@@ -54,18 +56,36 @@ public class StepsFragment extends Fragment {
     @BindView(R.id.rv_steps_description)
     RecyclerView mStepsRecyclerView;
 
-    private int recipeId;
+
     private Context mContext;
+    /**
+     * Ingredients vars
+     */
     private List<Ingredient> ingredientList;
     private IngredientViewModel ingredientViewModel;
-
+    private IngredientsAdapter ingredientsAdapter;
+    /**
+     * Recipe vars
+     */
+    private RecipeViewModel recipeViewModel;
+    private Recipe recipeSelected;
+    private int recipeId;
+    /**
+     * Steps vars
+     */
+    private StepAdapter stepAdapter;
     private List<Step> stepList;
     private StepViewModel stepViewModel;
 
-    private RecipeViewModel recipeViewModel;
-    private Recipe recipeSelected;
+    /**
+     * Listener
+     */
 
-    private IngredientsAdapter ingredientsAdapter;
+    private StepListener stepListener;
+
+    public interface StepListener {
+        void setpSelected(int stepId);
+    }
 
 
     public StepsFragment() {
@@ -92,6 +112,18 @@ public class StepsFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            stepListener = (StepListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " Must implement onStepSelected");
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
@@ -115,13 +147,7 @@ public class StepsFragment extends Fragment {
             }
         });
 
-        ingredientsAdapter = new IngredientsAdapter(mContext, ingredientList);
-        mIngredientsRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
-        mIngredientsRecyclerView.setAdapter(ingredientsAdapter);
-        mIngredientsRecyclerView.setHasFixedSize(true);
-
         ingredientViewModel = ViewModelProviders.of(this).get(IngredientViewModel.class);
-        Log.i(TAG, "recipeId for request database is :  " + recipeId);
         ingredientViewModel.getRecipeIngredients(recipeId).observe(this, ingredients -> {
             if (ingredients != null) {
                 // TODO : Add ProgressBar
@@ -137,9 +163,20 @@ public class StepsFragment extends Fragment {
                 // TODO : Add ProgressBar
                 stepList.clear();
                 stepList.addAll(steps);
-                // TODO : AUpdate Step Adapter
+                stepAdapter.notifyDataSetChanged();
+                setDifficulty(stepList);
             }
         });
+
+        ingredientsAdapter = new IngredientsAdapter(mContext, ingredientList);
+        mIngredientsRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 1));
+        mIngredientsRecyclerView.setAdapter(ingredientsAdapter);
+        mIngredientsRecyclerView.setHasFixedSize(true);
+
+        stepAdapter = new StepAdapter(mContext, stepList, stepListener);
+        mStepsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        mStepsRecyclerView.setAdapter(stepAdapter);
+        mStepsRecyclerView.setHasFixedSize(true);
 
     }
 
@@ -165,7 +202,29 @@ public class StepsFragment extends Fragment {
         String servingsString = mContext.getString(R.string.servings, recipe.getServings());
         mRecipeServings.setText(servingsString);
         mRecipeTitle.setText(recipe.getTitle());
-        //TODO : ADD Method for displaying difficulty ( start) depending on the step number
+
+    }
+
+    private void setDifficulty(List<Step> stepList) {
+        if (stepList != null && stepList.size() > 0) {
+            if (stepList.size() < 10) {
+                mLevelImage1.setVisibility(View.VISIBLE);
+                mLevelImage2.setVisibility(View.GONE);
+                mLevelImage3.setVisibility(View.GONE);
+            } else if (stepList.size() > 12) {
+                mLevelImage1.setVisibility(View.VISIBLE);
+                mLevelImage2.setVisibility(View.VISIBLE);
+                mLevelImage3.setVisibility(View.VISIBLE);
+            } else {
+                mLevelImage1.setVisibility(View.VISIBLE);
+                mLevelImage2.setVisibility(View.VISIBLE);
+                mLevelImage3.setVisibility(View.GONE);
+            }
+        } else {
+            mLevelImage1.setVisibility(View.GONE);
+            mLevelImage2.setVisibility(View.GONE);
+            mLevelImage3.setVisibility(View.GONE);
+        }
     }
 
     private void loadImage(int drawable) {
