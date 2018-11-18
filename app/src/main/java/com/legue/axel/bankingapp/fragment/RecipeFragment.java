@@ -1,4 +1,4 @@
-package com.legue.axel.bankingapp;
+package com.legue.axel.bankingapp.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.legue.axel.bankingapp.R;
 import com.legue.axel.bankingapp.adapter.RecipeAdapter;
 import com.legue.axel.bankingapp.database.BakingDatabase;
 import com.legue.axel.bankingapp.database.ViewModel.RecipeViewModel;

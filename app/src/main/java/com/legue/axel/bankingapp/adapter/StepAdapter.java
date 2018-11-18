@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.legue.axel.bankingapp.R;
-import com.legue.axel.bankingapp.StepsFragment;
+import com.legue.axel.bankingapp.fragment.StepsFragment;
 import com.legue.axel.bankingapp.database.model.Step;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepHolder> {
 
         String stepDescription = mContext.getString(R.string.step_card, i + 1, step.getShortDescription());
         stepHolder.stepShortDescription.setText(stepDescription);
-        stepHolder.cardViewStep.setOnClickListener(view -> stepListener.setpSelected(step.getStepId()));
+        stepHolder.cardViewStep.setOnClickListener(view -> stepListener.stepSelected(step.getStepId()));
 
     }
 

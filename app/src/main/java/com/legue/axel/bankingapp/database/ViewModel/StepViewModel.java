@@ -15,6 +15,7 @@ public class StepViewModel extends AndroidViewModel {
     LiveData<List<Step>> recipeSteps;
     BakingDatabase database;
 
+
     public StepViewModel(@NonNull Application application) {
         super(application);
         database = BakingDatabase.getsInstance(this.getApplication());
@@ -23,5 +24,9 @@ public class StepViewModel extends AndroidViewModel {
     public LiveData<List<Step>> getRecipeSteps(int recipeId) {
         recipeSteps = database.stepDao().getRecipeSteps(recipeId);
         return recipeSteps;
+    }
+
+    public LiveData<Step> getStepById(int stepId) {
+        return database.stepDao().getStepById(stepId);
     }
 }

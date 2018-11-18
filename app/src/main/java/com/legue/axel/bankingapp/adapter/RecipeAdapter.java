@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.legue.axel.bankingapp.R;
-import com.legue.axel.bankingapp.RecipeFragment;
+import com.legue.axel.bankingapp.fragment.RecipeFragment;
 import com.legue.axel.bankingapp.database.model.Recipe;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;

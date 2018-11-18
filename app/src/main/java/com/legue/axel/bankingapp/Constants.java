@@ -52,4 +52,5 @@ public class Constants {
      */
     public static final String FRAGMENT_RECIPES = "fragment_recipe";
     public static final String FRAGMENT_STEPS = "fragment_steps";
+    public static final String FRAGMENT_STEP_DETAIL = "fragment_step_detail";
 }

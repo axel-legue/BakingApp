@@ -66,4 +66,6 @@ dependencies {
     testImplementation "junit:junit:$rootProject.ext.junitVersion"
     androidTestImplementation "com.android.support.test:runner:$rootProject.ext.runnerVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.ext.espressoVersion"
+    // ExoPlayer
+    implementation "com.google.android.exoplayer:exoplayer:$rootProject.ext.exoPlayer"
 }

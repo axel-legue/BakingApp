@@ -8,6 +8,9 @@ import android.widget.FrameLayout;
 
 import com.legue.axel.bankingapp.database.BakingDatabase;
 import com.legue.axel.bankingapp.database.DataBaseUtils;
+import com.legue.axel.bankingapp.fragment.RecipeFragment;
+import com.legue.axel.bankingapp.fragment.StepDetailFragment;
+import com.legue.axel.bankingapp.fragment.StepsFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements RecipeFragment.Re
 
     private RecipeFragment recipeFragment;
     private StepsFragment stepsFragment;
+    private StepDetailFragment stepDetailFragment;
     private FragmentManager fragmentManager;
 
     @BindView(R.id.recipe_container)
@@ -63,6 +67,18 @@ public class MainActivity extends AppCompatActivity implements RecipeFragment.Re
                 .commit();
     }
 
+    private void initDetailStepFragment(int stepId) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.KEY_STEPS_ID, stepId);
+        stepDetailFragment = new StepDetailFragment();
+        stepDetailFragment.setArguments(bundle);
+        fragmentManager.beginTransaction()
+                .replace(R.id.recipe_container, stepDetailFragment)
+                .addToBackStack(Constants.FRAGMENT_STEP_DETAIL)
+                .commit();
+
+    }
+
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
@@ -74,13 +90,11 @@ public class MainActivity extends AppCompatActivity implements RecipeFragment.Re
 
     @Override
     public void onRecipeSelected(int recipeId) {
-        Log.i(TAG, "onRecipeSelected: Activity");
         initStepFragment(recipeId);
     }
 
     @Override
-    public void setpSelected(int stepId) {
-        Log.i(TAG, "setpSelected: Activity");
-        //TODO : Implement View Recipe Step
+    public void stepSelected(int stepId) {
+        initDetailStepFragment(stepId);
     }
 }
