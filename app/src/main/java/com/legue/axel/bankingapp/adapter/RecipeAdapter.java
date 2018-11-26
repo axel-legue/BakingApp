@@ -30,7 +30,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
     private final static String TAG = RecipeAdapter.class.getName();
     private Context mContext;
     private List<Recipe> recipeList;
-    private RecipeAdapter.RecipeListener recipeListener;
+    private RecipeListener recipeListener;
 
 
     public interface RecipeListener {
@@ -38,8 +38,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
     }
 
 
-
-    public RecipeAdapter(Context mContext, List<Recipe> recipeList, RecipeAdapter.RecipeListener recipeListener) {
+    public RecipeAdapter(Context mContext, List<Recipe> recipeList, RecipeListener recipeListener) {
         this.mContext = mContext;
         this.recipeList = recipeList;
         this.recipeListener = recipeListener;
