@@ -17,7 +17,7 @@ import com.legue.axel.bankingapp.database.model.Step;
         Recipe.class,
         Ingredient.class,
         Step.class},
-        version = 4,
+        version = 1,
         exportSchema = false)
 public abstract class BakingDatabase extends RoomDatabase {
 

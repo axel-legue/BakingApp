@@ -2,21 +2,28 @@ package com.legue.axel.bankingapp.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
@@ -27,8 +34,11 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.legue.axel.bankingapp.Constants;
 import com.legue.axel.bankingapp.R;
+import com.legue.axel.bankingapp.database.ViewModel.RecipeViewModel;
 import com.legue.axel.bankingapp.database.ViewModel.StepViewModel;
+import com.legue.axel.bankingapp.database.model.Recipe;
 import com.legue.axel.bankingapp.database.model.Step;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,21 +48,55 @@ public class StepDetailFragment extends Fragment {
 
     private final static String TAG = StepDetailFragment.class.getName();
 
+    @Nullable
+    @BindView(R.id.tablet_panel)
+    ConstraintLayout container;
+    @Nullable
+    @BindView(R.id.tv_title_recipe)
+    TextView recipeTitle;
+    @Nullable
+    @BindView(R.id.tv_step_indication)
+    TextView stepIndication;
+    @Nullable
+    @BindView(R.id.iv_thumbnail)
+    ImageView thumbnail;
+    @Nullable
+    @BindView(R.id.tv_content_description)
+    TextView longDescription;
     @BindView(R.id.exoplayer)
     PlayerView playerView;
+    @Nullable
+    @BindView(R.id.btn_next)
+    Button nextStepButton;
+    @Nullable
+    @BindView(R.id.btn_previous)
+    Button previousStepButton;
+    @BindView(R.id.ll_no_source)
+    LinearLayout noVideoSource;
+    @BindView(R.id.pb_mediaSource)
+    ProgressBar loadingMedia;
+
+    private int mFirsStepId;
+    private int mLastStepId;
 
     private Unbinder unbinder;
-    int stepId;
+    int stepSelectedId;
     private Context mContext;
     private Step stepSelected;
     private SimpleExoPlayer player;
     private StepViewModel stepViewModel;
+    private RecipeViewModel recipeViewModel;
+    private Recipe recipeSelected;
+    private boolean isLandscape;
+    private boolean isTablet;
+
+    private int totalStep;
+    private int currentStep;
 
     Player.EventListener eventListener = new Player.EventListener() {
         @Override
         public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
             Log.i(TAG, "onTracksChanged: ");
-
         }
 
         @Override
@@ -63,6 +107,33 @@ public class StepDetailFragment extends Fragment {
         @Override
         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
             Log.i(TAG, "onPlayerStateChanged: ");
+            switch (playbackState) {
+                case Player.STATE_BUFFERING:
+                    Log.i(TAG, "onPlayerStateChanged STATE_BUFFERING: ");
+                    loadingMedia.setVisibility(View.VISIBLE);
+                    noVideoSource.setVisibility(View.GONE);
+                    playerView.setVisibility(View.VISIBLE);
+                    break;
+                case Player.STATE_ENDED:
+                    loadingMedia.setVisibility(View.GONE);
+                    Log.i(TAG, "onPlayerStateChanged STATE_ENDED: ");
+                    break;
+                case Player.STATE_IDLE:
+                    noVideoSource.setVisibility(View.VISIBLE);
+                    playerView.setVisibility(View.GONE);
+                    Log.i(TAG, "onPlayerStateChanged STATE_IDLE: ");
+                    break;
+                case Player.STATE_READY:
+                    loadingMedia.setVisibility(View.GONE);
+                    noVideoSource.setVisibility(View.GONE);
+//                    playerView.setVisibility(View.VISIBLE);
+                    Log.i(TAG, "onPlayerStateChanged STATE_READY: ");
+                    break;
+                default:
+                    Log.i(TAG, "onPlayerStateChanged default : " + playbackState);
+                    break;
+
+            }
         }
 
         @Override
@@ -79,57 +150,263 @@ public class StepDetailFragment extends Fragment {
     public StepDetailFragment() {
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_step_details, container, false);
-        if (getArguments() != null && getArguments().containsKey(Constants.KEY_STEPS_ID)) {
-            stepId = getArguments().getInt(Constants.KEY_STEPS_ID);
-        } else {
-            stepId = -1;
+        View view = inflater.inflate(R.layout.fragment_details, container, false);
+        if (getArguments() != null) {
+            if (getArguments().containsKey(Constants.KEY_STEPS_ID)) {
+                stepSelectedId = getArguments().getInt(Constants.KEY_STEPS_ID);
+            }
+            if (getArguments().containsKey(Constants.KEY_FIRST_STEP_ID)) {
+                mFirsStepId = getArguments().getInt(Constants.KEY_FIRST_STEP_ID);
+            }
+            if (getArguments().containsKey(Constants.KEY_LAST_STEP_ID)) {
+                mLastStepId = getArguments().getInt(Constants.KEY_LAST_STEP_ID);
+            }
         }
+
+        if (container != null) {
+            isTablet = true;
+            isLandscape = false;
+        } else {
+            isTablet = false;
+            checkOrientation();
+        }
+
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
-        //TODO : reference listener for previous and next here.
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        checkOrientation();
+        initData();
+        if (!isLandscape) {
+            clickListener();
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        checkOrientation();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
-        player.release();
+        if (player != null) {
+            player.release();
+        }
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initData();
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(Constants.KEY_STEPS_ID, stepSelectedId);
+        outState.putInt(Constants.KEY_FIRST_STEP_ID, mFirsStepId);
+        outState.putInt(Constants.KEY_LAST_STEP_ID, mLastStepId);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(Constants.KEY_STEPS_ID)) {
+                stepSelectedId = savedInstanceState.getInt(Constants.KEY_STEPS_ID);
+            }
+            if (savedInstanceState.containsKey(Constants.KEY_FIRST_STEP_ID)) {
+                mFirsStepId = savedInstanceState.getInt(Constants.KEY_FIRST_STEP_ID);
+            }
+            if (savedInstanceState.containsKey(Constants.KEY_LAST_STEP_ID)) {
+                mLastStepId = savedInstanceState.getInt(Constants.KEY_LAST_STEP_ID);
+            }
+        }
+    }
+
+    public void updateDetails(int firstStepId, int lastStepId, int stepId) {
+        Log.i(TAG, "updateDetails stepId : " + stepId);
+        if (player != null) {
+            player.stop();
+        }
+
+        if (stepId != -1) {
+            mFirsStepId = firstStepId;
+            mLastStepId = lastStepId;
+            stepSelectedId = stepId;
+
+            displayStepIndicator();
+
+            stepViewModel.getStepById(stepSelectedId).observe(this, step -> {
+                if (step != null) {
+                    stepSelected = step;
+                    if (checkUrl(stepSelected.getVideoURL())) {
+                        initializePlayer(Uri.parse(stepSelected.getVideoURL()));
+                    } else {
+                        noVideoSource.setVisibility(View.VISIBLE);
+                        playerView.setVisibility(View.GONE);
+                    }
+                    getRecipe(stepSelected.getRecipeId());
+                    changeUiInfo(stepSelected);
+                }
+            });
+        }
     }
 
     private void initData() {
+        isTablet = mContext.getResources().getBoolean(R.bool.isTablet);
+
+        if (stepSelectedId == mFirsStepId && previousStepButton != null) {
+            previousStepButton.setVisibility(View.GONE);
+        }
+        if (stepSelectedId == mLastStepId && nextStepButton != null) {
+            nextStepButton.setVisibility(View.GONE);
+        }
         stepViewModel = ViewModelProviders.of(this).get(StepViewModel.class);
-        stepViewModel.getStepById(stepId).observe(this, step -> {
-            if (step != null) {
-                stepSelected = step;
-                initializePlayer(Uri.parse(stepSelected.getVideoURL()));
+
+        if (stepSelectedId != -1) {
+            displayStepIndicator();
+            stepViewModel.getStepById(stepSelectedId).observe(this, step -> {
+                if (step != null) {
+                    stepSelected = step;
+                    if (checkUrl(stepSelected.getVideoURL())) {
+                        initializePlayer(Uri.parse(stepSelected.getVideoURL()));
+                    }
+
+                    getRecipe(stepSelected.getRecipeId());
+
+                    changeUiInfo(stepSelected);
+                }
+            });
+        }
+    }
+
+    private void clickListener() {
+        nextStepButton.setOnClickListener(view -> {
+            if (player != null) {
+                player.stop();
+            }
+            Log.i(TAG, "onClick nextStepButton ");
+            if (stepSelectedId < mLastStepId && mLastStepId != -1) {
+                nextStepButton.setVisibility(View.VISIBLE);
+                stepSelectedId += 1;
+                displayStepIndicator();
+                loadStep(stepSelectedId);
+            }
+            if (stepSelectedId == mLastStepId || mLastStepId == -1) {
+                nextStepButton.setVisibility(View.GONE);
+            }
+
+            if (!(stepSelectedId == mFirsStepId) || !(mFirsStepId == -1)) {
+                previousStepButton.setVisibility(View.VISIBLE);
             }
         });
 
+        previousStepButton.setOnClickListener(view -> {
+            if (player != null) {
+                player.stop();
+            }
+            Log.i(TAG, "onClick previousStepButton ");
+            if (stepSelectedId > mFirsStepId && mFirsStepId != -1) {
+                previousStepButton.setVisibility(View.VISIBLE);
+                stepSelectedId -= 1;
+                displayStepIndicator();
+                loadStep(stepSelectedId);
+            }
+            if (stepSelectedId == mFirsStepId || mFirsStepId == -1) {
+                previousStepButton.setVisibility(View.GONE);
+                // Do nothing
+            }
 
-        playerView.setDefaultArtwork(mContext.getDrawable(R.drawable.placeholder_image));
-//        initializePlayer(Uri.parse(stepSelected.getVideoURL()));
+            if (!(stepSelectedId == mLastStepId) || !(mLastStepId == -1)) {
+                // Do nothing
+                nextStepButton.setVisibility(View.VISIBLE);
+            }
+        });
+    }
 
+    private void getRecipe(int recipeId) {
+        recipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
+        recipeViewModel.getRecipeById(recipeId).observe(this, recipe -> {
+            if (recipe != null) {
+                recipeSelected = recipe;
+                changeUiInfo(stepSelected);
+            }
+        });
+    }
+
+    private void loadStep(int stepSelectedId) {
+        stepViewModel.getStepById(stepSelectedId).observe(this, step -> {
+            if (step != null) {
+                stepSelected = step;
+
+                if (checkUrl(stepSelected.getVideoURL())) {
+                    createMediaSource(stepSelected);
+                }
+                changeUiInfo(stepSelected);
+            }
+        });
+    }
+
+    private boolean checkUrl(String URL) {
+        return stepSelected.getVideoURL() != null && Patterns.WEB_URL.matcher(URL).matches();
+    }
+
+    private void changeUiInfo(Step stepSelected) {
+
+        if (!isLandscape || isTablet) {
+            Log.i(TAG, "changeUiInfo: ");
+            if (recipeSelected != null && recipeTitle != null) {
+                recipeTitle.setText(recipeSelected.getTitle());
+            }
+
+            if (longDescription != null) {
+                longDescription.setText(stepSelected.getDescription());
+            }
+            if (checkUrl(stepSelected.getThumbnailURL())) {
+                Picasso.with(mContext)
+                        .load(stepSelected.getThumbnailURL())
+                        .error(R.drawable.placeholder_image)
+                        .placeholder(R.drawable.placeholder_image)
+                        .into(thumbnail);
+            }
+        }
+    }
+
+    private void createMediaSource(Step stepSelected) {
+        Log.i(TAG, "createMediaSource: " + stepSelected);
+
+        Uri videoUri = Uri.parse(stepSelected.getVideoURL());
+
+        // Produces DataSource instances through which media data is loaded.
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(mContext,
+                Util.getUserAgent(mContext, mContext.getString(R.string.app_name)));
+
+        // This is the MediaSource representing the media to be played.
+        MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(videoUri);
+
+        player.prepare(videoSource);
+        player.setPlayWhenReady(true);
     }
 
     private void initializePlayer(Uri videoURI) {
-        player = ExoPlayerFactory.newSimpleInstance(mContext);
-        playerView.setPlayer(player);
+        if (player == null) {
+            player = ExoPlayerFactory.newSimpleInstance(mContext);
+        }
+
+        if (playerView.getPlayer() == null) {
+            playerView.setPlayer(player);
+        }
 
         // Produces DataSource instances through which media data is loaded.
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(mContext,
@@ -146,6 +423,7 @@ public class StepDetailFragment extends Fragment {
         player.prepare(videoSource);
         player.setPlayWhenReady(true);
 
+
         /**
          * That how we create a PlayList
          */
@@ -153,9 +431,50 @@ public class StepDetailFragment extends Fragment {
 //        MediaSource secondSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(videoURI);
 //
 //        ConcatenatingMediaSource concatenatedSource = new ConcatenatingMediaSource(firstSource,secondSource);
+    }
 
+    private void checkOrientation() {
+        int currentOrientation = mContext.getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            isLandscape = true;
+            if (!isTablet) {
+                hideSystemUi();
+            }
+        } else {
+            showSystemUi();
+            isLandscape = false;
+        }
+    }
+
+
+    private void displayStepIndicator() {
+        totalStep = mLastStepId - mFirsStepId;
+        currentStep = stepSelectedId - mFirsStepId;
+        if (stepIndication != null) {
+            stepIndication.setText(mContext.getResources().getString(R.string.step_indication, currentStep, totalStep));
+        }
+    }
+
+    private void hideSystemUi() {
+        Log.i(TAG, "hideSystemUi: ");
+        View decorView = getActivity().getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                // Set the content to appear under the system bars so that the
+                // content doesn't resize when the system bars hide and show.
+                View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        // Hide the nav bar and status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
     }
 
+    private void showSystemUi() {
+        View decorView = getActivity().getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+
+    }
 
 }

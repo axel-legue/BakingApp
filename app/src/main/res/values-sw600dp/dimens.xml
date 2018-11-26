@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Margin -->
+    <dimen name="smallMargin">8dp</dimen>
+    <dimen name="regularMargin">16dp</dimen>
+    <dimen name="bigMargin">32dp</dimen>
+
+    <!-- Padding -->
+    <dimen name="smallPadding">8dp</dimen>
+    <dimen name="regularPadding">16dp</dimen>
+    <dimen name="bigPadding">32dp</dimen>
+
+    <!-- Text size -->
+    <dimen name="smallText">19sp</dimen>
+    <dimen name="regularText">22sp</dimen>
+    <dimen name="bigText">25sp</dimen>
+
+    <!-- CardView general -->
+    <dimen name="corner_radius">10dp</dimen>
+    <dimen name="card_max_elevation">8dp</dimen>
+
+    <!-- CardView Recipe -->
+    <dimen name="recipe_image_view">150dp</dimen>
+
+    <!--CardView Step -->
+    <dimen name="step_image_view">180dp</dimen>
+
+    <!-- Star ImageView-->
+    <dimen name="star">20dp</dimen>
+
+
+</resources>

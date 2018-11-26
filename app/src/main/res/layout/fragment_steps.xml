@@ -2,14 +2,14 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_steps_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <!-- TODO : wrap content for constraint-->
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="40dp"
-        tools:context=".MainActivity">
+        tools:context=".activity.RecipeActivity">
 
         <ImageView
             android:id="@+id/iv_recipe"
@@ -24,12 +24,10 @@
 
         <TextView
             android:id="@+id/tv_recipe_name"
+            style="@style/TitleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:textColor="@android:color/black"
-            android:textSize="22sp"
+            android:layout_margin="@dimen/regularMargin"
             app:layout_constraintEnd_toStartOf="@+id/linearLayout"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -39,10 +37,10 @@
 
         <TextView
             android:id="@+id/tv_servings"
+            style="@style/ContentText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_margin="@dimen/regularMargin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_recipe_name"
             tools:text="8 persons" />
@@ -51,7 +49,7 @@
             android:id="@+id/linearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="@dimen/regularMargin"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@+id/tv_recipe_name"
             app:layout_constraintEnd_toEndOf="parent"
@@ -83,18 +81,17 @@
 
         <View
             android:id="@+id/divider_1"
-            style="@style/Divider"
-            android:layout_marginTop="16dp"
+            style="@style/HorizontalDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_servings" />
 
         <TextView
             android:id="@+id/tv_ingredients"
+            style="@style/TitleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_margin="@dimen/regularMargin"
             android:text="@string/ingredients"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -107,9 +104,7 @@
             android:id="@+id/rv_ingredients"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="@dimen/bigMargin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -117,18 +112,17 @@
 
         <View
             android:id="@+id/divider_2"
-            style="@style/Divider"
-            android:layout_marginTop="16dp"
+            style="@style/HorizontalDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rv_ingredients" />
 
         <TextView
             android:id="@+id/tv_steps"
+            style="@style/TitleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_margin="@dimen/regularMargin"
             android:text="@string/steps"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -140,9 +134,7 @@
             android:id="@+id/rv_steps_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="@dimen/bigMargin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"

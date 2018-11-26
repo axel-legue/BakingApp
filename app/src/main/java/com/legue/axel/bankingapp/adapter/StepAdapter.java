@@ -42,9 +42,9 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepHolder> {
     public void onBindViewHolder(@NonNull StepHolder stepHolder, int i) {
         Step step = stepList.get(i);
 
-        String stepDescription = mContext.getString(R.string.step_card, i + 1, step.getShortDescription());
+        String stepDescription = mContext.getString(R.string.step_card, i , step.getShortDescription());
         stepHolder.stepShortDescription.setText(stepDescription);
-        stepHolder.cardViewStep.setOnClickListener(view -> stepListener.stepSelected(step.getStepId()));
+        stepHolder.cardViewStep.setOnClickListener(view -> stepListener.stepSelected(stepList.get(0).getStepId(), stepList.get(stepList.size()-1).getStepId(), step.getStepId()));
 
     }
 

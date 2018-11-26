@@ -1,8 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Margin -->
+    <dimen name="smallMargin">4dp</dimen>
+    <dimen name="regularMargin">8dp</dimen>
+    <dimen name="bigMargin">16dp</dimen>
+
+    <!-- Padding -->
+    <dimen name="smallPadding">4dp</dimen>
+    <dimen name="regularPadding">8dp</dimen>
+    <dimen name="bigPadding">16dp</dimen>
+
+    <!-- Text size -->
+    <dimen name="smallText">13sp</dimen>
+    <dimen name="regularText">16sp</dimen>
+    <dimen name="bigText">19sp</dimen>
+
+    <!-- CardView general -->
     <dimen name="corner_radius">10dp</dimen>
     <dimen name="card_max_elevation">8dp</dimen>
+
+    <!-- CardView Recipe -->
     <dimen name="recipe_image_view">150dp</dimen>
+
+    <!--CardView Step -->
     <dimen name="step_image_view">180dp</dimen>
+
+    <!-- Star ImageView-->
     <dimen name="star">20dp</dimen>
+
+    <!--
+Refer to App Widget Documentation for margin information
+http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
+    -->
+    <dimen name="widget_margin">8dp</dimen>
+
+
 </resources>

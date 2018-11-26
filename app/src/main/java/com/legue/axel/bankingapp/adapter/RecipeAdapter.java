@@ -1,5 +1,6 @@
 package com.legue.axel.bankingapp.adapter;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
@@ -12,8 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.legue.axel.bankingapp.R;
-import com.legue.axel.bankingapp.fragment.RecipeFragment;
+import com.legue.axel.bankingapp.activity.RecipeActivity;
+import com.legue.axel.bankingapp.database.ViewModel.StepViewModel;
 import com.legue.axel.bankingapp.database.model.Recipe;
+import com.legue.axel.bankingapp.database.model.Step;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 
@@ -27,10 +30,16 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
     private final static String TAG = RecipeAdapter.class.getName();
     private Context mContext;
     private List<Recipe> recipeList;
-    private RecipeFragment.RecipeListener recipeListener;
+    private RecipeAdapter.RecipeListener recipeListener;
 
 
-    public RecipeAdapter(Context mContext, List<Recipe> recipeList, RecipeFragment.RecipeListener recipeListener) {
+    public interface RecipeListener {
+        void onRecipeSelected(int recipeId);
+    }
+
+
+
+    public RecipeAdapter(Context mContext, List<Recipe> recipeList, RecipeAdapter.RecipeListener recipeListener) {
         this.mContext = mContext;
         this.recipeList = recipeList;
         this.recipeListener = recipeListener;
@@ -49,10 +58,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
         final Recipe recipe = recipeList.get(position);
 
         recipeHolder.mRecipeName.setText(recipe.getTitle());
-        recipeHolder.mRecipeServings.setText(String.valueOf(recipe.getServings()));
+        recipeHolder.mRecipeServings.setText(mContext.getResources().getString(R.string.servings, recipe.getServings()));
         recipeHolder.cardView.setOnClickListener(view -> {
             Log.i(TAG, "recipe selected:  " + recipe.getRecipeId());
             recipeListener.onRecipeSelected(recipe.getRecipeId());
+        });
+
+        StepViewModel stepViewModel = ViewModelProviders.of((RecipeActivity) mContext).get(StepViewModel.class);
+        stepViewModel.getRecipeSteps(recipe.getRecipeId()).observe((RecipeActivity) mContext, steps -> {
+            if (steps != null) {
+                setDifficulty(recipeHolder, steps);
+            }
         });
 
         switch (recipe.getTitle()) {
@@ -80,6 +96,28 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
                 .error(R.drawable.placeholder_image)
                 .placeholder(R.drawable.placeholder_image)
                 .into(imageView);
+    }
+
+    private void setDifficulty(RecipeHolder recipeHolder, List<Step> stepList) {
+        if (stepList != null && stepList.size() > 0) {
+            if (stepList.size() < 10) {
+                recipeHolder.mDifficulty_1.setVisibility(View.VISIBLE);
+                recipeHolder.mDifficulty_2.setVisibility(View.GONE);
+                recipeHolder.mDifficulty_3.setVisibility(View.GONE);
+            } else if (stepList.size() > 12) {
+                recipeHolder.mDifficulty_1.setVisibility(View.VISIBLE);
+                recipeHolder.mDifficulty_2.setVisibility(View.VISIBLE);
+                recipeHolder.mDifficulty_3.setVisibility(View.VISIBLE);
+            } else {
+                recipeHolder.mDifficulty_1.setVisibility(View.VISIBLE);
+                recipeHolder.mDifficulty_2.setVisibility(View.VISIBLE);
+                recipeHolder.mDifficulty_3.setVisibility(View.GONE);
+            }
+        } else {
+            recipeHolder.mDifficulty_1.setVisibility(View.GONE);
+            recipeHolder.mDifficulty_2.setVisibility(View.GONE);
+            recipeHolder.mDifficulty_3.setVisibility(View.GONE);
+        }
     }
 
     @Override

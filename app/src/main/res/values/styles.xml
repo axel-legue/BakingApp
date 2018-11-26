@@ -5,13 +5,97 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.AppTheme.ActionBar</item>
     </style>
 
+    <style name="ThemeOverlay.AppTheme.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <!-- title text color -->
+        <item name="android:textColorPrimary">@color/textOnPrimary</item>
+        <!-- subtitle text color -->
+        <item name="android:textColorSecondary">@color/textOnSecondary</item>
+        <!-- action menu item text color -->
+        <item name="actionMenuTextColor">@color/textOnPrimary</item>
+        <!-- action menu item icon color -->
+        <item name="colorControlNormal">@color/textOnPrimary</item>
+    </style>
 
-    <style name="Divider">
+    <style name="HorizontalDivider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
+        <item name="android:layout_marginTop">@dimen/bigMargin</item>
+        <item name="android:layout_marginBottom">@dimen/bigMargin</item>
         <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="VerticalDivider">
+        <item name="android:layout_width">2dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">@dimen/bigMargin</item>
+        <item name="android:layout_marginBottom">@dimen/bigMargin</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="IngredientStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
+    <style name="RecipeCardView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/regularMargin</item>
+        <item name="android:layout_marginLeft">@dimen/regularMargin</item>
+        <item name="android:layout_marginRight">@dimen/regularMargin</item>
+        <item name="android:layout_marginBottom">@dimen/regularMargin</item>
+    </style>
+
+    <style name="StepCardView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/regularMargin</item>
+        <item name="android:layout_marginLeft">@dimen/regularMargin</item>
+        <item name="android:layout_marginRight">@dimen/regularMargin</item>
+        <item name="android:layout_marginBottom">@dimen/regularMargin</item>
+    </style>
+
+    <style name="TitleText">
+        <item name="android:textColor">@color/textOnPrimary</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:textSize">@dimen/bigText</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="SubTitleText">
+        <item name="android:textColor">@color/textOnPrimary</item>
+        <item name="android:fontFamily">sans-serif-thin</item>
+        <item name="android:textSize">@dimen/regularText</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ContentText">
+        <item name="android:textColor">@color/textOnPrimary</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textSize">@dimen/smallText</item>
+    </style>
+
+    <style name="ErrorVideoText">
+        <item name="android:textColor">@color/textOnSecondary</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textSize">@dimen/regularText</item>
+    </style>
+
+    <style name="buttonStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/regularMargin</item>
+        <item name="android:layout_marginRight">@dimen/regularMargin</item>
+        <item name="android:textColor">@color/textOnSecondary</item>
+        <item name="android:backgroundTint">@color/colorAccent</item>
     </style>
 
 </resources>

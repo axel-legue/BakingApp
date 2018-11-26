@@ -2,9 +2,14 @@
     <string name="app_name">bakingApp</string>
     <string name="ingredient_quantity">\u2022 %1$s %2$s %3$s</string>
     <string name="servings">%1$d persons</string>
-    <string name="step_card">- %1$d : %2$s</string>
+    <string name="step_card">%1$d : %2$s</string>
     <string name="ingredients">Ingredients</string>
     <string name="steps">Steps</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
+    <string name="step_indication">%1$d / %2$d</string>
+    <string name="no_video">No Video available for this step</string>
+    <string name="description">Description</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

@@ -4,25 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <FrameLayout
-        android:id="@+id/recipe_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    tools:context=".activity.RecipeActivity">
 
     <FrameLayout
         android:id="@+id/step_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginStart="@dimen/bigMargin"
+        android:layout_marginTop="@dimen/bigMargin"
+        android:layout_marginBottom="@dimen/bigMargin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintHorizontal_bias="0.0"
@@ -34,13 +24,13 @@
         android:id="@+id/detail_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginStart="@dimen/bigMargin"
+        android:layout_marginTop="@dimen/bigMargin"
+        android:layout_marginEnd="@dimen/bigMargin"
+        android:layout_marginBottom="@dimen/bigMargin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/view2"
+        app:layout_constraintStart_toEndOf="@+id/divider"
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.Guideline
@@ -48,14 +38,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.3" />
+        app:layout_constraintGuide_percent="0.35" />
 
     <View
-        android:id="@+id/view2"
-        style="@style/Divider"
-        android:layout_width="2dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
+        android:id="@+id/divider"
+        style="@style/VerticalDivider"
+        android:layout_marginStart="@dimen/bigMargin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="parent" />

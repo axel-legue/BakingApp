@@ -4,6 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constants {
+    /**
+     * KEYS SharedPreferences
+     */
+    public static final String KEY_FIRST_RUN = "first_run";
 
     /**
      * KEYS Recipe
@@ -26,6 +30,8 @@ public class Constants {
      * KEYS Steps
      */
     public static final String KEY_STEPS_ID = "id";
+    public static final String KEY_FIRST_STEP_ID = "first_id";
+    public static final String KEY_LAST_STEP_ID = "last_id";
     public static final String KEY_STEPS_SHORT_DESCRIPTION = "shortDescription";
     public static final String KEY_STEPS_DESCRIPTION = "description";
     public static final String KEY_STEPS_VIDEO_URL = "videoURL";
@@ -50,6 +56,7 @@ public class Constants {
     /**
      * Keys for fragments
      */
+    public static final String FRAGMENT_TAG = "fragment-tag";
     public static final String FRAGMENT_RECIPES = "fragment_recipe";
     public static final String FRAGMENT_STEPS = "fragment_steps";
     public static final String FRAGMENT_STEP_DETAIL = "fragment_step_detail";

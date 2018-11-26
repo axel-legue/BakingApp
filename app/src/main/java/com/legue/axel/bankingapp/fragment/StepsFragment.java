@@ -84,7 +84,7 @@ public class StepsFragment extends Fragment {
     private StepListener stepListener;
 
     public interface StepListener {
-        void stepSelected(int stepId);
+        void stepSelected(int firstStepId, int lastStepId, int stepSelectedId);
     }
 
 
@@ -124,6 +124,20 @@ public class StepsFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(Constants.KEY_RECIPE_ID, recipeId);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null && savedInstanceState.containsKey(Constants.KEY_RECIPE_ID)) {
+            recipeId = savedInstanceState.getInt(Constants.KEY_RECIPE_ID);
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
@@ -132,6 +146,7 @@ public class StepsFragment extends Fragment {
     private void initData() {
 
         mContext = getActivity();
+
         if (ingredientList == null) {
             ingredientList = new ArrayList<>();
         }
