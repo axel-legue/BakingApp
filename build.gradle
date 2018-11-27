@@ -42,5 +42,5 @@ ext {
     lifecycleVersion = '1.1.1'
     roomVersion = '1.1.1'
     roundedImageView = '2.3.0'
-    exoPlayer = '2.9.0'
+    exoPlayer = '2.9.1'
 }

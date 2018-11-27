@@ -1,6 +1,7 @@
 package com.legue.axel.bankingapp.activity;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.FrameLayout;
@@ -23,6 +24,8 @@ public class DetailsActivity extends AppCompatActivity {
     @BindView(R.id.detail_container)
     FrameLayout stepContainer;
 
+    private StepDetailFragment stepDetailFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +34,6 @@ public class DetailsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
-
         if (intent != null) {
             if (intent.hasExtra(Constants.KEY_STEPS_ID)) {
                 stepSelectedId = intent.getIntExtra(Constants.KEY_STEPS_ID, -1);
@@ -44,19 +46,24 @@ public class DetailsActivity extends AppCompatActivity {
             }
         }
 
-        initData();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
+        if (fragment == null) {
+            stepDetailFragment = new StepDetailFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt(Constants.KEY_STEPS_ID, stepSelectedId);
+            bundle.putInt(Constants.KEY_FIRST_STEP_ID, firstStepId);
+            bundle.putInt(Constants.KEY_LAST_STEP_ID, lastStepId);
+            stepDetailFragment.setArguments(bundle);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.detail_container, stepDetailFragment, TAG)
+                    .commit();
+        } else {
+            // Retrieve previous fragment instance after rotation.
+            stepDetailFragment = (StepDetailFragment) fragment;
+        }
+
+
     }
 
-    private void initData() {
-        StepDetailFragment stepDetailFragment = new StepDetailFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(Constants.KEY_STEPS_ID, stepSelectedId);
-        bundle.putInt(Constants.KEY_FIRST_STEP_ID, firstStepId);
-        bundle.putInt(Constants.KEY_LAST_STEP_ID, lastStepId);
-        stepDetailFragment.setArguments(bundle);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.detail_container, stepDetailFragment)
-                .commit();
-    }
 }

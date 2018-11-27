@@ -2,6 +2,7 @@ package com.legue.axel.bankingapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 
@@ -18,6 +19,10 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
 
     private static final String TAG = StepsActivity.class.getName();
 
+    private static final String STEP_TAG = "step_tag";
+    private static final String DETAIL_TAG = "detail_tag";
+
+
     private int recipeIdSelected;
     private boolean mTwoPane;
     private StepDetailFragment stepDetailFragment;
@@ -33,27 +38,49 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
             recipeIdSelected = intent.getIntExtra(Constants.KEY_RECIPE_ID, -1);
         }
 
-        stepsFragment = new StepsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(Constants.KEY_RECIPE_ID, recipeIdSelected);
-        stepsFragment.setArguments(bundle);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.step_container, stepsFragment)
-                .commit();
 
-
-        if (findViewById(R.id.detail_container) != null) {
-            mTwoPane = true;
-            stepDetailFragment = new StepDetailFragment();
+        Fragment fragmentStep = getSupportFragmentManager().findFragmentByTag(STEP_TAG);
+        if (fragmentStep == null) {
+            stepsFragment = new StepsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt(Constants.KEY_RECIPE_ID, recipeIdSelected);
+            stepsFragment.setArguments(bundle);
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.detail_container, stepDetailFragment)
+                    .add(R.id.step_container, stepsFragment, STEP_TAG)
                     .commit();
         } else {
-            mTwoPane = false;
+            if (findViewById(R.id.detail_container) != null) {
+                mTwoPane = true;
+            } else {
+                mTwoPane = false;
+            }
+            stepsFragment = (StepsFragment) fragmentStep;
         }
+
+        Fragment fragmentDetail = getSupportFragmentManager().findFragmentByTag(DETAIL_TAG);
+        if (fragmentDetail == null) {
+            if (findViewById(R.id.detail_container) != null) {
+                mTwoPane = true;
+                stepDetailFragment = new StepDetailFragment();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.detail_container, stepDetailFragment, DETAIL_TAG)
+                        .commit();
+            } else {
+                mTwoPane = false;
+            }
+        } else {
+            if (findViewById(R.id.detail_container) != null) {
+                mTwoPane = true;
+            } else {
+                mTwoPane = false;
+            }
+            stepDetailFragment = (StepDetailFragment) fragmentDetail;
+        }
+
     }
+
 
     @Override
     public void stepSelected(int firstStepId, int lastStepId, int stepSelectedId) {
@@ -65,7 +92,6 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
             startActivity(intent);
         } else {
             stepDetailFragment.updateDetails(firstStepId, lastStepId, stepSelectedId);
-            // TODO : Check how and what Data we will send
         }
 
     }

@@ -50,7 +50,7 @@ public class StepDetailFragment extends Fragment {
 
     @Nullable
     @BindView(R.id.tablet_panel)
-    ConstraintLayout container;
+    ConstraintLayout mContainer;
     @Nullable
     @BindView(R.id.tv_title_recipe)
     TextView recipeTitle;
@@ -80,18 +80,21 @@ public class StepDetailFragment extends Fragment {
     private int mLastStepId;
 
     private Unbinder unbinder;
-    int stepSelectedId;
+
     private Context mContext;
     private Step stepSelected;
     private SimpleExoPlayer player;
     private StepViewModel stepViewModel;
     private RecipeViewModel recipeViewModel;
     private Recipe recipeSelected;
+
     private boolean isLandscape;
     private boolean isTablet;
+    private boolean isPortrait;
 
-    private int totalStep;
-    private int currentStep;
+    private int stepSelectedId = -1;
+    private int totalStep = -1;
+    private int currentStep = -1;
 
     Player.EventListener eventListener = new Player.EventListener() {
         @Override
@@ -172,14 +175,17 @@ public class StepDetailFragment extends Fragment {
             }
         }
 
-        if (container != null) {
-            isTablet = true;
-            isLandscape = false;
-        } else {
-            isTablet = false;
-            checkOrientation();
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(Constants.KEY_STEPS_ID)) {
+                stepSelectedId = savedInstanceState.getInt(Constants.KEY_STEPS_ID);
+            }
+            if (savedInstanceState.containsKey(Constants.KEY_FIRST_STEP_ID)) {
+                mFirsStepId = savedInstanceState.getInt(Constants.KEY_FIRST_STEP_ID);
+            }
+            if (savedInstanceState.containsKey(Constants.KEY_LAST_STEP_ID)) {
+                mLastStepId = savedInstanceState.getInt(Constants.KEY_LAST_STEP_ID);
+            }
         }
-
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
@@ -187,17 +193,18 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        checkOrientation();
+        checkConfiguration();
         initData();
-        if (!isLandscape) {
+        if (isPortrait) {
             clickListener();
         }
+
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        checkOrientation();
+        checkConfiguration();
     }
 
     @Override
@@ -211,26 +218,11 @@ public class StepDetailFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
         outState.putInt(Constants.KEY_STEPS_ID, stepSelectedId);
         outState.putInt(Constants.KEY_FIRST_STEP_ID, mFirsStepId);
         outState.putInt(Constants.KEY_LAST_STEP_ID, mLastStepId);
-    }
 
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(Constants.KEY_STEPS_ID)) {
-                stepSelectedId = savedInstanceState.getInt(Constants.KEY_STEPS_ID);
-            }
-            if (savedInstanceState.containsKey(Constants.KEY_FIRST_STEP_ID)) {
-                mFirsStepId = savedInstanceState.getInt(Constants.KEY_FIRST_STEP_ID);
-            }
-            if (savedInstanceState.containsKey(Constants.KEY_LAST_STEP_ID)) {
-                mLastStepId = savedInstanceState.getInt(Constants.KEY_LAST_STEP_ID);
-            }
-        }
+        super.onSaveInstanceState(outState);
     }
 
     public void updateDetails(int firstStepId, int lastStepId, int stepId) {
@@ -249,12 +241,7 @@ public class StepDetailFragment extends Fragment {
             stepViewModel.getStepById(stepSelectedId).observe(this, step -> {
                 if (step != null) {
                     stepSelected = step;
-                    if (checkUrl(stepSelected.getVideoURL())) {
-                        initializePlayer(Uri.parse(stepSelected.getVideoURL()));
-                    } else {
-                        noVideoSource.setVisibility(View.VISIBLE);
-                        playerView.setVisibility(View.GONE);
-                    }
+                    initializePlayer(stepSelected.getVideoURL());
                     getRecipe(stepSelected.getRecipeId());
                     changeUiInfo(stepSelected);
                 }
@@ -263,7 +250,6 @@ public class StepDetailFragment extends Fragment {
     }
 
     private void initData() {
-        isTablet = mContext.getResources().getBoolean(R.bool.isTablet);
 
         if (stepSelectedId == mFirsStepId && previousStepButton != null) {
             previousStepButton.setVisibility(View.GONE);
@@ -278,12 +264,8 @@ public class StepDetailFragment extends Fragment {
             stepViewModel.getStepById(stepSelectedId).observe(this, step -> {
                 if (step != null) {
                     stepSelected = step;
-                    if (checkUrl(stepSelected.getVideoURL())) {
-                        initializePlayer(Uri.parse(stepSelected.getVideoURL()));
-                    }
-
+                    initializePlayer(stepSelected.getVideoURL());
                     getRecipe(stepSelected.getRecipeId());
-
                     changeUiInfo(stepSelected);
                 }
             });
@@ -344,62 +326,57 @@ public class StepDetailFragment extends Fragment {
         });
     }
 
+    /**
+     * Only available for Mobile
+     *
+     * @param stepSelectedId
+     */
     private void loadStep(int stepSelectedId) {
         stepViewModel.getStepById(stepSelectedId).observe(this, step -> {
             if (step != null) {
                 stepSelected = step;
-
-                if (checkUrl(stepSelected.getVideoURL())) {
-                    createMediaSource(stepSelected);
-                }
+                initializePlayer(stepSelected.getVideoURL());
                 changeUiInfo(stepSelected);
             }
         });
     }
 
-    private boolean checkUrl(String URL) {
+    private boolean isUrlValid(String URL) {
         return stepSelected.getVideoURL() != null && Patterns.WEB_URL.matcher(URL).matches();
     }
 
+    /**
+     * available for Mobile and Tablet
+     *
+     * @param stepSelected
+     */
     private void changeUiInfo(Step stepSelected) {
 
-        if (!isLandscape || isTablet) {
-            Log.i(TAG, "changeUiInfo: ");
-            if (recipeSelected != null && recipeTitle != null) {
-                recipeTitle.setText(recipeSelected.getTitle());
-            }
-
-            if (longDescription != null) {
-                longDescription.setText(stepSelected.getDescription());
-            }
-            if (checkUrl(stepSelected.getThumbnailURL())) {
-                Picasso.with(mContext)
-                        .load(stepSelected.getThumbnailURL())
-                        .error(R.drawable.placeholder_image)
-                        .placeholder(R.drawable.placeholder_image)
-                        .into(thumbnail);
-            }
+        Log.i(TAG, "changeUiInfo: ");
+        if (recipeSelected != null && recipeTitle != null) {
+            recipeTitle.setText(recipeSelected.getTitle());
         }
+
+        if (longDescription != null) {
+            longDescription.setText(stepSelected.getDescription());
+        }
+        if (isUrlValid(stepSelected.getThumbnailURL()) && thumbnail != null) {
+            Picasso.with(mContext)
+                    .load(stepSelected.getThumbnailURL())
+                    .error(R.drawable.placeholder_image)
+                    .placeholder(R.drawable.placeholder_image)
+                    .into(thumbnail);
+        }
+
     }
 
-    private void createMediaSource(Step stepSelected) {
-        Log.i(TAG, "createMediaSource: " + stepSelected);
-
-        Uri videoUri = Uri.parse(stepSelected.getVideoURL());
-
-        // Produces DataSource instances through which media data is loaded.
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(mContext,
-                Util.getUserAgent(mContext, mContext.getString(R.string.app_name)));
-
-        // This is the MediaSource representing the media to be played.
-        MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(videoUri);
-
-        player.prepare(videoSource);
-        player.setPlayWhenReady(true);
-    }
-
-    private void initializePlayer(Uri videoURI) {
+    /**
+     * Initialise player
+     *
+     * @param videoURI
+     */
+    private void initializePlayer(String videoURI) {
+        loadingMedia.setVisibility(View.VISIBLE);
         if (player == null) {
             player = ExoPlayerFactory.newSimpleInstance(mContext);
         }
@@ -408,45 +385,60 @@ public class StepDetailFragment extends Fragment {
             playerView.setPlayer(player);
         }
 
-        // Produces DataSource instances through which media data is loaded.
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(mContext,
-                Util.getUserAgent(mContext, mContext.getString(R.string.app_name)));
+        Uri uri;
 
-        // This is the MediaSource representing the media to be played.
-        MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(videoURI);
+        if (isUrlValid(videoURI)) {
+            uri = Uri.parse(videoURI);
+            // Produces DataSource instances through which media data is loaded.
+            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(mContext,
+                    Util.getUserAgent(mContext, mContext.getString(R.string.app_name)));
 
-        // Add a listener to receive events from the player.
-        player.addListener(eventListener);
+            MediaSource videoSource;
+            // This is the MediaSource representing the media to be played.
+            videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                    .createMediaSource(uri);
 
-        // Prepare the player with the source.
-        player.prepare(videoSource);
-        player.setPlayWhenReady(true);
+            // Add a listener to receive events from the player.
+            player.addListener(eventListener);
 
-
-        /**
-         * That how we create a PlayList
-         */
-//        MediaSource firstSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(videoURI);
-//        MediaSource secondSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(videoURI);
-//
-//        ConcatenatingMediaSource concatenatedSource = new ConcatenatingMediaSource(firstSource,secondSource);
-    }
-
-    private void checkOrientation() {
-        int currentOrientation = mContext.getResources().getConfiguration().orientation;
-        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-            isLandscape = true;
-            if (!isTablet) {
-                hideSystemUi();
-            }
+            // Prepare the player with the source.
+            player.prepare(videoSource);
+            player.setPlayWhenReady(true);
         } else {
-            showSystemUi();
-            isLandscape = false;
+            noVideoSource.setVisibility(View.VISIBLE);
+            playerView.setVisibility(View.GONE);
+            loadingMedia.setVisibility(View.GONE);
+
         }
     }
 
+    private void checkConfiguration() {
+        if (recipeTitle == null) {
+            isLandscape = true;
+            isTablet = false;
+            isPortrait = false;
+        } else if (previousStepButton == null) {
+            isLandscape = false;
+            isTablet = true;
+            isPortrait = false;
+        } else {
+            isLandscape = false;
+            isTablet = false;
+            isPortrait = true;
+        }
+        if (isPortrait) {
+            showSystemUi();
+        } else if (isTablet) {
+            showSystemUi();
+        } else {
+            hideSystemUi();
+        }
 
+    }
+
+    /**
+     * available for mobile
+     */
     private void displayStepIndicator() {
         totalStep = mLastStepId - mFirsStepId;
         currentStep = stepSelectedId - mFirsStepId;
@@ -455,25 +447,25 @@ public class StepDetailFragment extends Fragment {
         }
     }
 
+
     private void hideSystemUi() {
         Log.i(TAG, "hideSystemUi: ");
         View decorView = getActivity().getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE
                 // Set the content to appear under the system bars so that the
                 // content doesn't resize when the system bars hide and show.
-                View.SYSTEM_UI_FLAG_LOW_PROFILE
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        // Hide the nav bar and status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                // Hide the nav bar and status bar
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN);
 
     }
 
     private void showSystemUi() {
         View decorView = getActivity().getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        decorView.setSystemUiVisibility(0);
 
     }
 

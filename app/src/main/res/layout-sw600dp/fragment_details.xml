@@ -11,9 +11,8 @@
         style="@style/TitleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/regularMargin"
-        android:layout_marginEnd="@dimen/regularMargin"
-        android:visibility="gone"
+        android:layout_marginBottom="@dimen/regularMargin"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,6 +22,8 @@
         android:id="@+id/exoplayer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="@dimen/regularMargin"
+        android:layout_marginEnd="@dimen/regularMargin"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintDimensionRatio="h,"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,6 +78,8 @@
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/regularMargin"
         android:src="@drawable/placeholder_image"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="@dimen/regularMargin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio=""
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
@@ -120,33 +123,33 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_step_description"
         tools:text="9. Whisk together the egg whites and remaining 300 grams (1.5 cups) of sugar in the bowl of a stand mixer until combined. Set the bowl over the top of the boiling water and continue whisking the egg white mixture until it feels hot to the touch and the sugar is totally dissolved (if you have a reliable thermometer, it should read 150\u00b0F). " />
 
-    <Button
-        android:id="@+id/btn_previous"
-        style="@style/buttonStyle"
-        android:text="@string/previous"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    <!--<Button-->
+        <!--android:id="@+id/btn_previous"-->
+        <!--style="@style/buttonStyle"-->
+        <!--android:text="@string/previous"-->
+        <!--android:visibility="gone"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent" />-->
 
-    <Button
-        android:id="@+id/btn_next"
-        style="@style/buttonStyle"
-        android:text="@string/next"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    <!--<Button-->
+        <!--android:id="@+id/btn_next"-->
+        <!--style="@style/buttonStyle"-->
+        <!--android:text="@string/next"-->
+        <!--android:visibility="gone"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent" />-->
 
-    <TextView
-        android:id="@+id/tv_step_indication"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/regularMargin"
-        android:layout_marginEnd="@dimen/regularMargin"
-        android:layout_marginBottom="@dimen/regularMargin"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="2/16" />
+    <!--<TextView-->
+        <!--android:id="@+id/tv_step_indication"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="@dimen/regularMargin"-->
+        <!--android:layout_marginEnd="@dimen/regularMargin"-->
+        <!--android:layout_marginBottom="@dimen/regularMargin"-->
+        <!--android:visibility="gone"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--tools:text="2/16" />-->
 
 </android.support.constraint.ConstraintLayout>

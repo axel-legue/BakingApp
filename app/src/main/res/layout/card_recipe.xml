@@ -12,18 +12,17 @@
     card_view:cardElevation="@dimen/card_max_elevation">
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/regularPadding"
         tools:context=".activity.RecipeActivity">
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/iv_recipe"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/recipe_image_view"
             android:scaleType="centerCrop"
-            android:src="@drawable/brownies"
-            app:layout_constraintDimensionRatio="16:9"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:riv_corner_radius_top_left="@dimen/corner_radius"
