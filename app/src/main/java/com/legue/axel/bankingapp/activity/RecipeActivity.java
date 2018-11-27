@@ -1,13 +1,8 @@
 package com.legue.axel.bankingapp.activity;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 
 import com.legue.axel.bankingapp.Constants;
 import com.legue.axel.bankingapp.R;
@@ -20,6 +15,11 @@ import com.legue.axel.bankingapp.database.model.Recipe;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -34,6 +34,9 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.R
     private List<Recipe> recipeList;
     private RecipeAdapter recipeAdapter;
 
+    // The Idling Resource which will be null in production.
+//    @Nullable
+//    private SimpleIdlingResource mIdlingResource;
 
     // TODO : Create Layout For Landscape Mode
     // TODO : Check Internet / Display Message if No internet for Video
@@ -56,12 +59,17 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.R
             DataBaseUtils dataBaseUtils = new DataBaseUtils(this, mDatabase);
             dataBaseUtils.fillDatabase();
         }
+//        mIdlingResource = new SimpleIdlingResource();
         initData();
 
     }
 
 
     private void initData() {
+
+//        if (mIdlingResource != null) {
+//            mIdlingResource.setIdleState(false);
+//        }
 
         if (recipeList == null) {
             recipeList = new ArrayList<>();
@@ -78,12 +86,14 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.R
 
             RecipeViewModel recipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
             recipeViewModel.getRecipeList().observe(this, recipes -> {
+
                 if (recipes != null && recipes.size() > 0) {
                     // TODO : Add ProgressBar
                     recipeList.clear();
                     recipeList.addAll(recipes);
                     recipeAdapter.notifyDataSetChanged();
                 }
+//                mIdlingResource.setIdleState(true);
             });
         }
     }
@@ -95,7 +105,19 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.R
         startActivity(intent);
     }
 
-    private boolean isTablet(){
+    private boolean isTablet() {
         return getResources().getBoolean(R.bool.isTablet);
     }
+
+//    /**
+//     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
+//     */
+//    @VisibleForTesting
+//    @NonNull
+//    public IdlingResource getIdlingResource() {
+//        if (mIdlingResource == null) {
+//            mIdlingResource = new SimpleIdlingResource();
+//        }
+//        return mIdlingResource;
+//    }
 }

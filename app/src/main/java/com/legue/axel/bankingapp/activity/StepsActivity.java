@@ -2,18 +2,14 @@ package com.legue.axel.bankingapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.FrameLayout;
 
 import com.legue.axel.bankingapp.Constants;
 import com.legue.axel.bankingapp.R;
-import com.legue.axel.bankingapp.adapter.StepAdapter;
 import com.legue.axel.bankingapp.fragment.StepDetailFragment;
 import com.legue.axel.bankingapp.fragment.StepsFragment;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 public class StepsActivity extends AppCompatActivity implements StepsFragment.StepListener {
 

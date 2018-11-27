@@ -1,9 +1,6 @@
 package com.legue.axel.bankingapp.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +15,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -79,7 +79,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
     }
 
     private void loadImage(int drawable, ImageView imageView) {
-        Picasso.with(mContext)
+        Picasso.get()
                 .load(drawable)
                 .error(R.drawable.placeholder_image)
                 .placeholder(R.drawable.placeholder_image)

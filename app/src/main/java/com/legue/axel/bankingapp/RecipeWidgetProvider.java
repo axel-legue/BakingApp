@@ -3,18 +3,11 @@ package com.legue.axel.bankingapp;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.widget.RemoteViews;
 
 import com.legue.axel.bankingapp.activity.RecipeActivity;
-import com.legue.axel.bankingapp.activity.StepsActivity;
-import com.legue.axel.bankingapp.database.BakingDatabase;
-import com.legue.axel.bankingapp.database.model.Recipe;
-
-import java.util.List;
 
 /**
  * Implementation of App Widget functionality.

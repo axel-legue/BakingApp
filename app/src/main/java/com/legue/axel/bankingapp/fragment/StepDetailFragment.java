@@ -1,14 +1,9 @@
 package com.legue.axel.bankingapp.fragment;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -40,6 +35,10 @@ import com.legue.axel.bankingapp.database.model.Recipe;
 import com.legue.axel.bankingapp.database.model.Step;
 import com.squareup.picasso.Picasso;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -358,7 +357,7 @@ public class StepDetailFragment extends Fragment {
             longDescription.setText(stepSelected.getDescription());
         }
         if (isUrlValid(stepSelected.getThumbnailURL()) && thumbnail != null) {
-            Picasso.with(mContext)
+            Picasso.get()
                     .load(stepSelected.getThumbnailURL())
                     .error(R.drawable.placeholder_image)
                     .placeholder(R.drawable.placeholder_image)
