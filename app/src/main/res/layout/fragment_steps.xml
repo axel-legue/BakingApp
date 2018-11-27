@@ -28,8 +28,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/regularMargin"
-            app:layout_constraintEnd_toStartOf="@+id/linearLayout"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_recipe"
@@ -41,43 +39,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/regularMargin"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_recipe_name"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tv_recipe_name"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="8 persons" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/regularMargin"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_recipe_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/tv_recipe_name"
-            app:layout_constraintTop_toTopOf="@+id/tv_recipe_name">
-
-            <ImageView
-                android:id="@+id/iv_level_1"
-                android:layout_width="@dimen/star"
-                android:layout_height="@dimen/star"
-                android:layout_weight="1"
-                android:src="@drawable/ic_star_border_black_24dp" />
-
-            <ImageView
-                android:id="@+id/iv_level_2"
-                android:layout_width="@dimen/star"
-                android:layout_height="@dimen/star"
-                android:layout_weight="1"
-                android:src="@drawable/ic_star_border_black_24dp" />
-
-            <ImageView
-                android:id="@+id/iv_level_3"
-                android:layout_width="@dimen/star"
-                android:layout_height="@dimen/star"
-                android:layout_weight="1"
-                android:src="@drawable/ic_star_border_black_24dp" />
-        </LinearLayout>
 
         <View
             android:id="@+id/divider_1"

@@ -45,12 +45,6 @@ public class StepsFragment extends Fragment {
     TextView mRecipeTitle;
     @BindView(R.id.tv_servings)
     TextView mRecipeServings;
-    @BindView(R.id.iv_level_1)
-    ImageView mLevelImage1;
-    @BindView(R.id.iv_level_2)
-    ImageView mLevelImage2;
-    @BindView(R.id.iv_level_3)
-    ImageView mLevelImage3;
     @BindView(R.id.rv_ingredients)
     RecyclerView mIngredientsRecyclerView;
     @BindView(R.id.rv_steps_description)
@@ -179,7 +173,6 @@ public class StepsFragment extends Fragment {
                 stepList.clear();
                 stepList.addAll(steps);
                 stepAdapter.notifyDataSetChanged();
-                setDifficulty(stepList);
             }
         });
 
@@ -218,28 +211,6 @@ public class StepsFragment extends Fragment {
         mRecipeServings.setText(servingsString);
         mRecipeTitle.setText(recipe.getTitle());
 
-    }
-
-    private void setDifficulty(List<Step> stepList) {
-        if (stepList != null && stepList.size() > 0) {
-            if (stepList.size() < 10) {
-                mLevelImage1.setVisibility(View.VISIBLE);
-                mLevelImage2.setVisibility(View.GONE);
-                mLevelImage3.setVisibility(View.GONE);
-            } else if (stepList.size() > 12) {
-                mLevelImage1.setVisibility(View.VISIBLE);
-                mLevelImage2.setVisibility(View.VISIBLE);
-                mLevelImage3.setVisibility(View.VISIBLE);
-            } else {
-                mLevelImage1.setVisibility(View.VISIBLE);
-                mLevelImage2.setVisibility(View.VISIBLE);
-                mLevelImage3.setVisibility(View.GONE);
-            }
-        } else {
-            mLevelImage1.setVisibility(View.GONE);
-            mLevelImage2.setVisibility(View.GONE);
-            mLevelImage3.setVisibility(View.GONE);
-        }
     }
 
     private void loadImage(int drawable) {

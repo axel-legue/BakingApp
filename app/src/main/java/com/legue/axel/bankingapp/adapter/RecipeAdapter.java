@@ -1,6 +1,5 @@
 package com.legue.axel.bankingapp.adapter;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
@@ -13,10 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.legue.axel.bankingapp.R;
-import com.legue.axel.bankingapp.activity.RecipeActivity;
-import com.legue.axel.bankingapp.database.ViewModel.StepViewModel;
 import com.legue.axel.bankingapp.database.model.Recipe;
-import com.legue.axel.bankingapp.database.model.Step;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 
@@ -63,13 +59,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
             recipeListener.onRecipeSelected(recipe.getRecipeId());
         });
 
-        StepViewModel stepViewModel = ViewModelProviders.of((RecipeActivity) mContext).get(StepViewModel.class);
-        stepViewModel.getRecipeSteps(recipe.getRecipeId()).observe((RecipeActivity) mContext, steps -> {
-            if (steps != null) {
-                setDifficulty(recipeHolder, steps);
-            }
-        });
-
         switch (recipe.getTitle()) {
             case "Nutella Pie":
                 loadImage(R.drawable.nutella_pie, recipeHolder.mRecipeImageView);
@@ -97,28 +86,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
                 .into(imageView);
     }
 
-    private void setDifficulty(RecipeHolder recipeHolder, List<Step> stepList) {
-        if (stepList != null && stepList.size() > 0) {
-            if (stepList.size() < 10) {
-                recipeHolder.mDifficulty_1.setVisibility(View.VISIBLE);
-                recipeHolder.mDifficulty_2.setVisibility(View.GONE);
-                recipeHolder.mDifficulty_3.setVisibility(View.GONE);
-            } else if (stepList.size() > 12) {
-                recipeHolder.mDifficulty_1.setVisibility(View.VISIBLE);
-                recipeHolder.mDifficulty_2.setVisibility(View.VISIBLE);
-                recipeHolder.mDifficulty_3.setVisibility(View.VISIBLE);
-            } else {
-                recipeHolder.mDifficulty_1.setVisibility(View.VISIBLE);
-                recipeHolder.mDifficulty_2.setVisibility(View.VISIBLE);
-                recipeHolder.mDifficulty_3.setVisibility(View.GONE);
-            }
-        } else {
-            recipeHolder.mDifficulty_1.setVisibility(View.GONE);
-            recipeHolder.mDifficulty_2.setVisibility(View.GONE);
-            recipeHolder.mDifficulty_3.setVisibility(View.GONE);
-        }
-    }
-
     @Override
     public int getItemCount() {
         return recipeList.size();
@@ -133,12 +100,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
         TextView mRecipeName;
         @BindView(R.id.tv_serving)
         TextView mRecipeServings;
-        @BindView(R.id.iv_level_1)
-        ImageView mDifficulty_1;
-        @BindView(R.id.iv_level_2)
-        ImageView mDifficulty_2;
-        @BindView(R.id.iv_level_3)
-        ImageView mDifficulty_3;
 
 
         public RecipeHolder(@NonNull View itemView) {

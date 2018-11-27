@@ -49,9 +49,6 @@ public class StepDetailFragment extends Fragment {
     private final static String TAG = StepDetailFragment.class.getName();
 
     @Nullable
-    @BindView(R.id.tablet_panel)
-    ConstraintLayout mContainer;
-    @Nullable
     @BindView(R.id.tv_title_recipe)
     TextView recipeTitle;
     @Nullable

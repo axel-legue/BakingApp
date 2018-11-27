@@ -46,48 +46,14 @@
             android:id="@+id/tv_serving"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="@dimen/regularMargin"
             android:layout_marginEnd="8dp"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/textOnPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_recipe"
             tools:text="Servings : 8" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/regularMargin"
-            android:layout_marginEnd="@dimen/regularMargin"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_recipe">
-
-            <ImageView
-                android:id="@+id/iv_level_1"
-                android:layout_width="@dimen/star"
-                android:layout_height="@dimen/star"
-                android:layout_weight="1"
-                android:src="@drawable/ic_star_border_black_24dp" />
-
-            <ImageView
-                android:id="@+id/iv_level_2"
-                android:layout_width="@dimen/star"
-                android:layout_height="@dimen/star"
-                android:layout_weight="1"
-                android:src="@drawable/ic_star_border_black_24dp" />
-
-            <ImageView
-                android:id="@+id/iv_level_3"
-                android:layout_width="@dimen/star"
-                android:layout_height="@dimen/star"
-                android:layout_weight="1"
-                android:src="@drawable/ic_star_border_black_24dp" />
-        </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
