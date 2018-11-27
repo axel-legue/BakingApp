@@ -53,11 +53,4 @@ public class Constants {
         measureMap.put("UNIT", "unit");
     }
 
-    /**
-     * Keys for fragments
-     */
-    public static final String FRAGMENT_TAG = "fragment-tag";
-    public static final String FRAGMENT_RECIPES = "fragment_recipe";
-    public static final String FRAGMENT_STEPS = "fragment_steps";
-    public static final String FRAGMENT_STEP_DETAIL = "fragment_step_detail";
 }
