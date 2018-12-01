@@ -4,12 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.legue.axel.bankingapp.Constants;
+import com.legue.axel.bankingapp.IdlingResource.SimpleIdlingResource;
 import com.legue.axel.bankingapp.R;
 import com.legue.axel.bankingapp.fragment.StepDetailFragment;
 import com.legue.axel.bankingapp.fragment.StepsFragment;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.test.espresso.IdlingResource;
 
 public class StepsActivity extends AppCompatActivity implements StepsFragment.StepListener {
 
@@ -18,11 +23,17 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
     private static final String STEP_TAG = "step_tag";
     private static final String DETAIL_TAG = "detail_tag";
 
+    // The Idling Resource which will be null in production.
+    @Nullable
+    private SimpleIdlingResource mIdlingResource;
+
 
     private int recipeIdSelected;
     private boolean mTwoPane;
     private StepDetailFragment stepDetailFragment;
     private StepsFragment stepsFragment;
+    private Fragment fragmentStep;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +45,17 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
             recipeIdSelected = intent.getIntExtra(Constants.KEY_RECIPE_ID, -1);
         }
 
+        fragmentStep = getSupportFragmentManager().findFragmentByTag(STEP_TAG);
+    }
 
-        Fragment fragmentStep = getSupportFragmentManager().findFragmentByTag(STEP_TAG);
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         if (fragmentStep == null) {
+            if (mIdlingResource != null) {
+                mIdlingResource.setIdleState(false);
+            }
             stepsFragment = new StepsFragment();
             Bundle bundle = new Bundle();
             bundle.putInt(Constants.KEY_RECIPE_ID, recipeIdSelected);
@@ -74,9 +93,7 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
             }
             stepDetailFragment = (StepDetailFragment) fragmentDetail;
         }
-
     }
-
 
     @Override
     public void stepSelected(int firstStepId, int lastStepId, int stepSelectedId) {
@@ -89,6 +106,25 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
         } else {
             stepDetailFragment.updateDetails(firstStepId, lastStepId, stepSelectedId);
         }
-
     }
+
+    @Override
+    public void dataLoaded() {
+        if (mIdlingResource != null) {
+            mIdlingResource.setIdleState(true);
+        }
+    }
+
+    /**
+     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
+     */
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
+    }
+
 }

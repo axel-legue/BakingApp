@@ -47,7 +47,7 @@ public class StepsFragment extends Fragment {
     TextView mRecipeServings;
     @BindView(R.id.rv_ingredients)
     RecyclerView mIngredientsRecyclerView;
-    @BindView(R.id.rv_steps_description)
+    @BindView(R.id.rv_description)
     RecyclerView mStepsRecyclerView;
 
 
@@ -71,14 +71,16 @@ public class StepsFragment extends Fragment {
     private List<Step> stepList;
     private StepViewModel stepViewModel;
 
+
     /**
      * Listener
      */
-
     private StepListener stepListener;
 
     public interface StepListener {
         void stepSelected(int firstStepId, int lastStepId, int stepSelectedId);
+
+        void dataLoaded();
     }
 
 
@@ -173,6 +175,7 @@ public class StepsFragment extends Fragment {
                 stepList.clear();
                 stepList.addAll(steps);
                 stepAdapter.notifyDataSetChanged();
+                stepListener.dataLoaded();
             }
         });
 
@@ -220,4 +223,5 @@ public class StepsFragment extends Fragment {
                 .placeholder(R.drawable.placeholder_image)
                 .into(mRecipeImage);
     }
+
 }
