@@ -37,6 +37,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:' + rootProject.recyclerviewVersion
     implementation 'androidx.cardview:cardview:' + rootProject.cardviewVersion
     implementation 'androidx.constraintlayout:constraintlayout:' + rootProject.constraintlayoutVersion
+    implementation 'com.google.android.material:material:1.1.0-alpha01'
     // Picasso dependencies
     implementation 'com.squareup.picasso:picasso:' + rootProject.picassoVersion
     // RoundedImageView dependencies

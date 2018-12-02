@@ -2,17 +2,22 @@ package com.legue.axel.bankingapp.widget;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.google.gson.Gson;
 import com.legue.axel.bankingapp.Constants;
 import com.legue.axel.bankingapp.R;
 import com.legue.axel.bankingapp.database.BakingDatabase;
+import com.legue.axel.bankingapp.database.model.Ingredient;
 import com.legue.axel.bankingapp.database.model.Recipe;
 
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class RecipeRemoteViewsService extends RemoteViewsService {
 
@@ -31,7 +36,9 @@ class RecipeRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
     private final String TAG = RecipeRemoteViewFactory.class.getName();
 
     private Context mContext;
-    private List<Recipe> mRecipeList;
+    private List<Ingredient> mIngredientList;
+    private int recipeId;
+    private Recipe mRecipe;
 
     public RecipeRemoteViewFactory(Context context) {
         Log.i(TAG, "RecipeRemoteViewFactory: ");
@@ -46,7 +53,14 @@ class RecipeRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onDataSetChanged() {
         Log.i(TAG, "onDataSetChanged: ");
-        mRecipeList = BakingDatabase.getsInstance(mContext).recipeDao().getAllRecipeInWidget();
+        Gson gson = new Gson();
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("com.legue.axel.bankingapp", MODE_PRIVATE);
+        if (sharedPreferences.contains(Constants.KEY_FAVORITE_RECIPE)) {
+            String json = sharedPreferences.getString(Constants.KEY_FAVORITE_RECIPE, "");
+            mRecipe = gson.fromJson(json, Recipe.class);
+            mIngredientList = BakingDatabase.getsInstance(mContext).ingredientDao().getRecipeIngredientsWidget(mRecipe.getRecipeId());
+        }
+
     }
 
     @Override
@@ -57,44 +71,22 @@ class RecipeRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public int getCount() {
         Log.i(TAG, "getCount: ");
-        return mRecipeList.size();
+        return mIngredientList.size();
     }
 
     @Override
     public RemoteViews getViewAt(int i) {
         Log.i(TAG, "getViewAt: ");
-        Recipe recipe = mRecipeList.get(i);
+        Ingredient ingredient = mIngredientList.get(i);
 
-        RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.recipe_widget_item);
-        views.setTextViewText(R.id.tv_recipe_title, recipe.getTitle());
+        RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.ingredient_widget_item);
+        views.setTextViewText(R.id.tv_ingredient_name, ingredient.getName());
 
-        String servings = mContext.getResources().getString(R.string.servings, recipe.getServings());
-        views.setTextViewText(R.id.tv_recipe_servings, servings);
-
-
-        switch (recipe.getTitle()) {
-            case "Nutella Pie":
-                views.setImageViewResource(R.id.iv_recipe, R.drawable.nutella_pie);
-                break;
-            case "Brownies":
-
-                views.setImageViewResource(R.id.iv_recipe, R.drawable.brownies);
-                break;
-            case "Yellow Cake":
-                views.setImageViewResource(R.id.iv_recipe, R.drawable.yellow_cake);
-                break;
-            case "Cheesecake":
-                views.setImageViewResource(R.id.iv_recipe, R.drawable.cheese_cake);
-                break;
-            default:
-                views.setImageViewResource(R.id.iv_recipe, R.drawable.placeholder_image);
-                break;
-        }
 
         // Fill in the onClick PendingIntent Template using the specific RecipeId
         // for each item individually.
         Bundle extras = new Bundle();
-        extras.putInt(Constants.KEY_RECIPE_ID, recipe.getRecipeId());
+        extras.putInt(Constants.KEY_RECIPE_ID, recipeId);
         Intent fillIntent = new Intent();
         fillIntent.putExtras(extras);
         views.setOnClickFillInIntent(R.id.container_recipe_widget, fillIntent);

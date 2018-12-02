@@ -1,5 +1,8 @@
 package com.legue.axel.bankingapp.database.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -11,7 +14,7 @@ import com.google.gson.annotations.SerializedName;
         parentColumns = "id",
         childColumns = "recipe_id",
         onDelete = ForeignKey.CASCADE))
-public class Ingredient {
+public class Ingredient implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -72,4 +75,38 @@ public class Ingredient {
     public void setRecipeId(int recipeId) {
         this.recipeId = recipeId;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.ingredientId);
+        dest.writeDouble(this.quantity);
+        dest.writeString(this.measure);
+        dest.writeString(this.name);
+        dest.writeInt(this.recipeId);
+    }
+
+    protected Ingredient(Parcel in) {
+        this.ingredientId = in.readInt();
+        this.quantity = in.readDouble();
+        this.measure = in.readString();
+        this.name = in.readString();
+        this.recipeId = in.readInt();
+    }
+
+    public static final Parcelable.Creator<Ingredient> CREATOR = new Parcelable.Creator<Ingredient>() {
+        @Override
+        public Ingredient createFromParcel(Parcel source) {
+            return new Ingredient(source);
+        }
+
+        @Override
+        public Ingredient[] newArray(int size) {
+            return new Ingredient[size];
+        }
+    };
 }

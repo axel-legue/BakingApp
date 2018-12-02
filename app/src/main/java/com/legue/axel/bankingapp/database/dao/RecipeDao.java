@@ -24,6 +24,9 @@ public interface RecipeDao {
     @Query("SELECT * FROM Recipe WHERE id = :recipeId")
     LiveData<Recipe> getRecipeById(int recipeId);
 
+    @Query("SELECT * FROM Recipe WHERE id = :recipeId")
+    Recipe getRecipeByIdWidget(int recipeId);
+
     @Insert
     void insertRecipe(Recipe recipe);
 

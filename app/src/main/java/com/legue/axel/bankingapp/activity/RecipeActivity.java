@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.google.gson.Gson;
 import com.legue.axel.bankingapp.Constants;
 import com.legue.axel.bankingapp.R;
 import com.legue.axel.bankingapp.adapter.RecipeAdapter;
@@ -33,16 +34,20 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.R
 
     private List<Recipe> recipeList;
     private RecipeAdapter recipeAdapter;
+    private SharedPreferences preferences;
 
-    // The Idling Resource which will be null in production.
-//    @Nullable
-//    private SimpleIdlingResource mIdlingResource;
-
-    // TODO : Create Layout For Landscape Mode
+    /**
+     * ===========================================================================================
+     * GENERAL UPDATE TO MAKE FOR A BETTER APPLICATION
+     * =============================================================================================
+     */
     // TODO : Check Internet / Display Message if No internet for Video
-    // TODO : Add Widget
-    // TODO : Add UI TEST
-
+    // TODO : Better Design
+    // TODO : Add Animation / Transition
+    // TODO : Ability to add Recipe
+    // TODO : Ability to share Recipe
+    // TODO : Test Dagger 2
+    // TODO : Convert to Kotlin
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,23 +58,19 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.R
         BakingDatabase mDatabase = BakingDatabase.getsInstance(this);
 //        AppExecutors.getInstance().getDiskIO().execute(() -> mDatabase.clearAllTables());
 
-        SharedPreferences preferences = getSharedPreferences("com.legue.axel.bankingapp", MODE_PRIVATE);
+        preferences = getSharedPreferences("com.legue.axel.bankingapp", MODE_PRIVATE);
         if (!preferences.contains(Constants.KEY_FIRST_RUN)) {
             preferences.edit().putBoolean(Constants.KEY_FIRST_RUN, false).apply();
             DataBaseUtils dataBaseUtils = new DataBaseUtils(this, mDatabase);
             dataBaseUtils.fillDatabase();
         }
-//        mIdlingResource = new SimpleIdlingResource();
+
         initData();
 
     }
 
 
     private void initData() {
-
-//        if (mIdlingResource != null) {
-//            mIdlingResource.setIdleState(false);
-//        }
 
         if (recipeList == null) {
             recipeList = new ArrayList<>();
@@ -92,8 +93,16 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.R
                     recipeList.clear();
                     recipeList.addAll(recipes);
                     recipeAdapter.notifyDataSetChanged();
+
+                    // Save to Shared Preference
+                    if (!preferences.contains(Constants.KEY_FAVORITE_RECIPE)) {
+                        Gson gson = new Gson();
+                        String json = gson.toJson(recipeList.get(0));
+                        preferences.edit()
+                                .putString(Constants.KEY_FAVORITE_RECIPE, json)
+                                .apply();
+                    }
                 }
-//                mIdlingResource.setIdleState(true);
             });
         }
     }
@@ -109,15 +118,4 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.R
         return getResources().getBoolean(R.bool.isTablet);
     }
 
-//    /**
-//     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
-//     */
-//    @VisibleForTesting
-//    @NonNull
-//    public IdlingResource getIdlingResource() {
-//        if (mIdlingResource == null) {
-//            mIdlingResource = new SimpleIdlingResource();
-//        }
-//        return mIdlingResource;
-//    }
 }

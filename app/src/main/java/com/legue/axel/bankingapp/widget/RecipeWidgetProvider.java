@@ -3,18 +3,21 @@ package com.legue.axel.bankingapp.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.content.SharedPreferences;
+import android.preference.Preference;
 import android.widget.RemoteViews;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.legue.axel.bankingapp.Constants;
 import com.legue.axel.bankingapp.R;
-import com.legue.axel.bankingapp.activity.RecipeActivity;
 import com.legue.axel.bankingapp.activity.StepsActivity;
+import com.legue.axel.bankingapp.database.BakingDatabase;
 import com.legue.axel.bankingapp.database.model.Recipe;
 
-import java.util.List;
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Implementation of App Widget functionality.
@@ -29,7 +32,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         RemoteViews views = getRecipeListRemoteView(context, appWidgetManager, appWidgetId);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.lv_recipe_widget);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.lv_ringredients_widget);
     }
 
     @Override
@@ -43,15 +46,23 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
     public static RemoteViews getRecipeListRemoteView(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_provider);
 
+        SharedPreferences preferences = context.getSharedPreferences("com.legue.axel.bankingapp", MODE_PRIVATE);
+        if (preferences.contains(Constants.KEY_FAVORITE_RECIPE)) {
+            Gson gson = new Gson();
+            String json = preferences.getString(Constants.KEY_FAVORITE_RECIPE, "");
+            Recipe mRecipe = gson.fromJson(json, Recipe.class);
+            views.setTextViewText(R.id.tv_recipe_name, mRecipe.getTitle());
+        }
+
         Intent intent = new Intent(context, RecipeRemoteViewsService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        views.setRemoteAdapter(R.id.lv_recipe_widget, intent);
+        views.setRemoteAdapter(R.id.lv_ringredients_widget, intent);
 
         Intent appIntent = new Intent(context, StepsActivity.class);
         PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setPendingIntentTemplate(R.id.lv_recipe_widget, appPendingIntent);
+        views.setPendingIntentTemplate(R.id.lv_ringredients_widget, appPendingIntent);
 
-        views.setEmptyView(R.id.lv_recipe_widget, R.id.tv_empty_view);
+        views.setEmptyView(R.id.lv_ringredients_widget, R.id.tv_empty_view);
 
         return views;
     }
@@ -66,5 +77,6 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
     }
+
 }
 

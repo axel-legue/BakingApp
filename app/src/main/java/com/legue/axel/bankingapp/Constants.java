@@ -8,6 +8,7 @@ public class Constants {
      * KEYS SharedPreferences
      */
     public static final String KEY_FIRST_RUN = "first_run";
+    public static final String KEY_FAVORITE_RECIPE = "favorite_recipe";
 
     /**
      * KEYS Recipe

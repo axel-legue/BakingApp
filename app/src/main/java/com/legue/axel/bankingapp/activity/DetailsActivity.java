@@ -1,9 +1,11 @@
 package com.legue.axel.bankingapp.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.legue.axel.bankingapp.Constants;
 import com.legue.axel.bankingapp.R;
 import com.legue.axel.bankingapp.fragment.StepDetailFragment;
@@ -30,6 +32,7 @@ public class DetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
+
 
         ButterKnife.bind(this);
 
@@ -62,7 +65,6 @@ public class DetailsActivity extends AppCompatActivity {
             // Retrieve previous fragment instance after rotation.
             stepDetailFragment = (StepDetailFragment) fragment;
         }
-
 
     }
 

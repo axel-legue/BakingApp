@@ -1,11 +1,19 @@
 package com.legue.axel.bankingapp.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.legue.axel.bankingapp.Constants;
 import com.legue.axel.bankingapp.IdlingResource.SimpleIdlingResource;
 import com.legue.axel.bankingapp.R;
+import com.legue.axel.bankingapp.database.BakingDatabase;
+import com.legue.axel.bankingapp.database.DataBaseUtils;
+import com.legue.axel.bankingapp.database.model.Recipe;
 import com.legue.axel.bankingapp.fragment.StepDetailFragment;
 import com.legue.axel.bankingapp.fragment.StepsFragment;
 
@@ -14,7 +22,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.test.espresso.IdlingResource;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class StepsActivity extends AppCompatActivity implements StepsFragment.StepListener {
 
@@ -34,11 +45,14 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
     private StepsFragment stepsFragment;
     private Fragment fragmentStep;
 
+    @BindView(R.id.fab_favorite)
+    FloatingActionButton favoriteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps);
+        ButterKnife.bind(this);
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(Constants.KEY_RECIPE_ID)) {
@@ -46,11 +60,7 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
         }
 
         fragmentStep = getSupportFragmentManager().findFragmentByTag(STEP_TAG);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         if (fragmentStep == null) {
             if (mIdlingResource != null) {
@@ -93,6 +103,33 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
             }
             stepDetailFragment = (StepDetailFragment) fragmentDetail;
         }
+
+        favoriteButton.setOnClickListener(view -> {
+            BakingDatabase.getsInstance(this).recipeDao().getRecipeById(recipeIdSelected).observe(this, new Observer<Recipe>() {
+                @Override
+                public void onChanged(Recipe recipe) {
+
+                    SharedPreferences preferences = getSharedPreferences("com.legue.axel.bankingapp", MODE_PRIVATE);
+                    if (preferences.contains(Constants.KEY_FAVORITE_RECIPE)) {
+                        Gson gson = new Gson();
+                        String json = preferences.getString(Constants.KEY_FAVORITE_RECIPE, "");
+                        Recipe mRecipe = gson.fromJson(json, Recipe.class);
+                        if (recipe.getRecipeId() != mRecipe.getRecipeId()) {
+                            preferences.edit()
+                                    .putString(Constants.KEY_FAVORITE_RECIPE, gson.toJson(recipe))
+                                    .apply();
+
+                            Snackbar.make(view, "You just saved the actual recipe as favorite", Snackbar.LENGTH_LONG)
+                                    .show();
+                        } else {
+                            Snackbar.make(view, "This recipe is already favorite", Snackbar.LENGTH_LONG)
+                                    .show();
+                        }
+                    }
+                }
+            });
+
+        });
     }
 
     @Override
