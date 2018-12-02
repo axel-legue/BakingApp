@@ -18,6 +18,9 @@ public interface RecipeDao {
     @Query("SELECT * FROM Recipe ORDER BY id")
     LiveData<List<Recipe>> getAllRecipe();
 
+    @Query("SELECT * FROM Recipe ORDER BY id")
+    List<Recipe> getAllRecipeInWidget();
+
     @Query("SELECT * FROM Recipe WHERE id = :recipeId")
     LiveData<Recipe> getRecipeById(int recipeId);
 
