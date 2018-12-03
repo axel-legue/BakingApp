@@ -9,4 +9,5 @@
     <color name="textLightOnPrimary">#757575</color>
     <color name="textOnSecondary">#ffffff</color>
     <color name="buttonDisabled">#757575</color>
+    <color name="scrimText">#80000000</color>
 </resources>

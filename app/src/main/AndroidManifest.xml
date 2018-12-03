@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.legue.axel.bankingapp">
+    package="com.legue.axel.bakingapp">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.RecipeActivity"
+            android:name="com.legue.axel.bakingapp.activity.RecipeActivity"
             android:configChanges="keyboard|keyboardHidden|screenSize|screenLayout|smallestScreenSize|uiMode">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,10 +24,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.StepsActivity" />
-        <activity android:name=".activity.DetailsActivity" />
+        <activity android:name="com.legue.axel.bakingapp.activity.StepsActivity" />
+        <activity android:name="com.legue.axel.bakingapp.activity.DetailsActivity" />
 
-        <receiver android:name=".widget.RecipeWidgetProvider">
+        <receiver android:name="com.legue.axel.bakingapp.widget.RecipeWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -37,7 +37,7 @@
                 android:resource="@xml/recipe_widget_provider_info" />
         </receiver>
         <service
-            android:name=".widget.RecipeRemoteViewsService"
+            android:name="com.legue.axel.bakingapp.widget.RecipeRemoteViewsService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>

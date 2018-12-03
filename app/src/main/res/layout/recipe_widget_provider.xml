@@ -1,29 +1,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
     android:orientation="vertical"
     android:padding="@dimen/widget_margin">
 
-    <TextView
-        android:id="@+id/tv_recipe_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textColor="@color/textOnPrimary"
-        android:textSize="@dimen/bigText" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="60dp"
+        android:background="@color/colorPrimaryDark"
+        android:padding="@dimen/widget_margin">
 
-        <ListView
-            android:id="@+id/lv_ringredients_widget"
+        <ImageView
+            android:id="@+id/iv_recipe"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:contentDescription="@string/recipe_picture"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/nutella_pie" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/tv_recipe_name"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/scrimText"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/regularText"
+            tools:text="Nutella pie" />
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/lv_ringredients_widget"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/tv_empty_view"
