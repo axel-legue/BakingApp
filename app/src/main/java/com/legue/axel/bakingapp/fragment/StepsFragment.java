@@ -40,14 +40,19 @@ public class StepsFragment extends Fragment {
 
     private Unbinder unbinder;
     @BindView(R.id.iv_recipe)
+    private
     ImageView mRecipeImage;
     @BindView(R.id.tv_recipe_name)
+    private
     TextView mRecipeTitle;
     @BindView(R.id.tv_servings)
+    private
     TextView mRecipeServings;
     @BindView(R.id.rv_ingredients)
+    private
     RecyclerView mIngredientsRecyclerView;
     @BindView(R.id.rv_description)
+    private
     RecyclerView mStepsRecyclerView;
 
 
@@ -56,12 +61,7 @@ public class StepsFragment extends Fragment {
      * Ingredients vars
      */
     private List<Ingredient> ingredientList;
-    private IngredientViewModel ingredientViewModel;
     private IngredientsAdapter ingredientsAdapter;
-    /**
-     * Recipe vars
-     */
-    private RecipeViewModel recipeViewModel;
     private Recipe recipeSelected;
     private int recipeId;
     /**
@@ -69,7 +69,6 @@ public class StepsFragment extends Fragment {
      */
     private StepAdapter stepAdapter;
     private List<Step> stepList;
-    private StepViewModel stepViewModel;
 
 
     /**
@@ -150,7 +149,11 @@ public class StepsFragment extends Fragment {
             stepList = new ArrayList<>();
         }
 
-        recipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
+        /*
+      Recipe vars
+     */ /**
+         * Recipe vars
+         */RecipeViewModel recipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
         recipeViewModel.getRecipeById(recipeId).observe(this, recipe -> {
             if (recipe != null) {
                 recipeSelected = recipe;
@@ -158,20 +161,18 @@ public class StepsFragment extends Fragment {
             }
         });
 
-        ingredientViewModel = ViewModelProviders.of(this).get(IngredientViewModel.class);
+        IngredientViewModel ingredientViewModel = ViewModelProviders.of(this).get(IngredientViewModel.class);
         ingredientViewModel.getRecipeIngredients(recipeId).observe(this, ingredients -> {
             if (ingredients != null) {
-                // TODO : Add ProgressBar
                 ingredientList.clear();
                 ingredientList.addAll(ingredients);
                 ingredientsAdapter.notifyDataSetChanged();
             }
         });
 
-        stepViewModel = ViewModelProviders.of(this).get(StepViewModel.class);
+        StepViewModel stepViewModel = ViewModelProviders.of(this).get(StepViewModel.class);
         stepViewModel.getRecipeSteps(recipeId).observe(this, steps -> {
             if (steps != null) {
-                // TODO : Add ProgressBar
                 stepList.clear();
                 stepList.addAll(steps);
                 stepAdapter.notifyDataSetChanged();

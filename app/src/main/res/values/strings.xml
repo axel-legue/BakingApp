@@ -11,8 +11,6 @@
     <string name="step_indication">%1$d / %2$d</string>
     <string name="no_video">No Video available for this step</string>
     <string name="description">Description</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
     <string name="is_empty">is empty</string>
     <string name="recipe_picture">recipe picture</string>
 </resources>

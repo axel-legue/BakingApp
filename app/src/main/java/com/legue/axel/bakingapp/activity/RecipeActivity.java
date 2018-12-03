@@ -30,6 +30,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.R
     private static final String TAG = RecipeActivity.class.getName();
 
     @BindView(R.id.rv_recipe)
+    private
     RecyclerView recipeRecyclerView;
 
     private List<Recipe> recipeList;
@@ -89,7 +90,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.R
             recipeViewModel.getRecipeList().observe(this, recipes -> {
 
                 if (recipes != null && recipes.size() > 0) {
-                    // TODO : Add ProgressBar
+
                     recipeList.clear();
                     recipeList.addAll(recipes);
                     recipeAdapter.notifyDataSetChanged();

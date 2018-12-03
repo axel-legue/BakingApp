@@ -42,10 +42,9 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
     private int recipeIdSelected;
     private boolean mTwoPane;
     private StepDetailFragment stepDetailFragment;
-    private StepsFragment stepsFragment;
-    private Fragment fragmentStep;
 
     @BindView(R.id.fab_favorite)
+    private
     FloatingActionButton favoriteButton;
 
     @Override
@@ -59,9 +58,10 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
             recipeIdSelected = intent.getIntExtra(Constants.KEY_RECIPE_ID, -1);
         }
 
-        fragmentStep = getSupportFragmentManager().findFragmentByTag(STEP_TAG);
+        Fragment fragmentStep = getSupportFragmentManager().findFragmentByTag(STEP_TAG);
 
 
+        StepsFragment stepsFragment;
         if (fragmentStep == null) {
             if (mIdlingResource != null) {
                 mIdlingResource.setIdleState(false);
@@ -104,30 +104,27 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
             stepDetailFragment = (StepDetailFragment) fragmentDetail;
         }
 
-        favoriteButton.setOnClickListener(view -> {
-            BakingDatabase.getsInstance(this).recipeDao().getRecipeById(recipeIdSelected).observe(this, recipe -> {
+        favoriteButton.setOnClickListener(view -> BakingDatabase.getsInstance(this).recipeDao().getRecipeById(recipeIdSelected).observe(this, recipe -> {
 
-                SharedPreferences preferences = getSharedPreferences("com.legue.axel.bankingapp", MODE_PRIVATE);
-                if (preferences.contains(Constants.KEY_FAVORITE_RECIPE)) {
-                    Gson gson = new Gson();
-                    String json = preferences.getString(Constants.KEY_FAVORITE_RECIPE, "");
-                    Recipe mRecipe = gson.fromJson(json, Recipe.class);
-                    if (recipe.getRecipeId() != mRecipe.getRecipeId()) {
-                        preferences.edit()
-                                .putString(Constants.KEY_FAVORITE_RECIPE, gson.toJson(recipe))
-                                .apply();
-                        updateWidget();
+            SharedPreferences preferences = getSharedPreferences("com.legue.axel.bankingapp", MODE_PRIVATE);
+            if (preferences.contains(Constants.KEY_FAVORITE_RECIPE)) {
+                Gson gson = new Gson();
+                String json = preferences.getString(Constants.KEY_FAVORITE_RECIPE, "");
+                Recipe mRecipe = gson.fromJson(json, Recipe.class);
+                if (recipe.getRecipeId() != mRecipe.getRecipeId()) {
+                    preferences.edit()
+                            .putString(Constants.KEY_FAVORITE_RECIPE, gson.toJson(recipe))
+                            .apply();
+                    updateWidget();
 
-                        Snackbar.make(view, "You just saved the actual recipe as favorite", Snackbar.LENGTH_LONG)
-                                .show();
-                    } else {
-                        Snackbar.make(view, "This recipe is already favorite", Snackbar.LENGTH_LONG)
-                                .show();
-                    }
+                    Snackbar.make(view, "You just saved the actual recipe as favorite", Snackbar.LENGTH_LONG)
+                            .show();
+                } else {
+                    Snackbar.make(view, "This recipe is already favorite", Snackbar.LENGTH_LONG)
+                            .show();
                 }
-            });
-
-        });
+            }
+        }));
     }
 
     private void updateWidget() {

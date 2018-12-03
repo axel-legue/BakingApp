@@ -15,8 +15,6 @@ import com.legue.axel.bakingapp.R;
 import com.legue.axel.bakingapp.activity.StepsActivity;
 import com.legue.axel.bakingapp.database.model.Recipe;
 
-import java.text.DecimalFormat;
-
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -26,8 +24,8 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
     private final static String TAG = RecipeWidgetProvider.class.getName();
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+    private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+                                        int appWidgetId) {
         // Construct the RemoteViews object
         RemoteViews views = getRecipeListRemoteView(context, appWidgetManager, appWidgetId);
         // Instruct the widget manager to update the widget
@@ -44,7 +42,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    public static RemoteViews getRecipeListRemoteView(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+    private static RemoteViews getRecipeListRemoteView(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_provider);
 
         SharedPreferences preferences = context.getSharedPreferences("com.legue.axel.bankingapp", MODE_PRIVATE);

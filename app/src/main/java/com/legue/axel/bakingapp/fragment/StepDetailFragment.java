@@ -49,27 +49,36 @@ public class StepDetailFragment extends Fragment {
 
     @Nullable
     @BindView(R.id.tv_title_recipe)
+    private
     TextView recipeTitle;
     @Nullable
     @BindView(R.id.tv_step_indication)
+    private
     TextView stepIndication;
     @Nullable
     @BindView(R.id.iv_thumbnail)
+    private
     ImageView thumbnail;
     @Nullable
     @BindView(R.id.tv_content_description)
+    private
     TextView longDescription;
     @BindView(R.id.exoplayer)
+    private
     PlayerView playerView;
     @Nullable
     @BindView(R.id.btn_next)
+    private
     Button nextStepButton;
     @Nullable
     @BindView(R.id.btn_previous)
+    private
     Button previousStepButton;
     @BindView(R.id.ll_no_source)
+    private
     LinearLayout noVideoSource;
     @BindView(R.id.pb_mediaSource)
+    private
     ProgressBar loadingMedia;
 
     private int mFirsStepId;
@@ -81,18 +90,13 @@ public class StepDetailFragment extends Fragment {
     private Step stepSelected;
     private SimpleExoPlayer player;
     private StepViewModel stepViewModel;
-    private RecipeViewModel recipeViewModel;
     private Recipe recipeSelected;
 
-    private boolean isLandscape;
-    private boolean isTablet;
     private boolean isPortrait;
 
     private int stepSelectedId = -1;
-    private int totalStep = -1;
-    private int currentStep = -1;
 
-    Player.EventListener eventListener = new Player.EventListener() {
+    private Player.EventListener eventListener = new Player.EventListener() {
         @Override
         public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
             Log.i(TAG, "onTracksChanged: ");
@@ -313,7 +317,7 @@ public class StepDetailFragment extends Fragment {
     }
 
     private void getRecipe(int recipeId) {
-        recipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
+        RecipeViewModel recipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
         recipeViewModel.getRecipeById(recipeId).observe(this, recipe -> {
             if (recipe != null) {
                 recipeSelected = recipe;
@@ -325,7 +329,6 @@ public class StepDetailFragment extends Fragment {
     /**
      * Only available for Mobile
      *
-     * @param stepSelectedId
      */
     private void loadStep(int stepSelectedId) {
         stepViewModel.getStepById(stepSelectedId).observe(this, step -> {
@@ -343,8 +346,6 @@ public class StepDetailFragment extends Fragment {
 
     /**
      * available for Mobile and Tablet
-     *
-     * @param stepSelected
      */
     private void changeUiInfo(Step stepSelected) {
 
@@ -368,8 +369,6 @@ public class StepDetailFragment extends Fragment {
 
     /**
      * Initialise player
-     *
-     * @param videoURI
      */
     private void initializePlayer(String videoURI) {
         loadingMedia.setVisibility(View.VISIBLE);
@@ -409,6 +408,8 @@ public class StepDetailFragment extends Fragment {
     }
 
     private void checkConfiguration() {
+        boolean isTablet;
+        boolean isLandscape;
         if (recipeTitle == null) {
             isLandscape = true;
             isTablet = false;
@@ -436,8 +437,8 @@ public class StepDetailFragment extends Fragment {
      * available for mobile
      */
     private void displayStepIndicator() {
-        totalStep = mLastStepId - mFirsStepId;
-        currentStep = stepSelectedId - mFirsStepId;
+        int totalStep = mLastStepId - mFirsStepId;
+        int currentStep = stepSelectedId - mFirsStepId;
         if (stepIndication != null) {
             stepIndication.setText(mContext.getResources().getString(R.string.step_indication, currentStep, totalStep));
         }

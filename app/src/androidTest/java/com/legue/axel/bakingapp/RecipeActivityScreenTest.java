@@ -41,8 +41,8 @@ public class RecipeActivityScreenTest {
     @Test
     public void clickRecyclerViewItem_OpensStepsActivity() {
 
-        /**
-         * Click RecyclerView Item
+        /*
+          Click RecyclerView Item
          */
         onView(ViewMatchers.withId(R.id.rv_recipe))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));

@@ -102,7 +102,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
         TextView mRecipeServings;
 
 
-        public RecipeHolder(@NonNull View itemView) {
+        RecipeHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

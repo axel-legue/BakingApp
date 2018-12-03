@@ -24,8 +24,6 @@ public class DetailsActivity extends AppCompatActivity {
     @BindView(R.id.detail_container)
     FrameLayout stepContainer;
 
-    private StepDetailFragment stepDetailFragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +46,7 @@ public class DetailsActivity extends AppCompatActivity {
         }
 
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
+        StepDetailFragment stepDetailFragment;
         if (fragment == null) {
             stepDetailFragment = new StepDetailFragment();
             Bundle bundle = new Bundle();

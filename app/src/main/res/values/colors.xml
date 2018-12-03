@@ -2,12 +2,8 @@
 <resources>
     <color name="colorPrimaryDark">#b0a75a</color>
     <color name="colorPrimary">#e3d888</color>
-    <color name="colorPrimaryLight">#ffffb9</color>
     <color name="colorAccent">#6e4fdb</color>
-    <color name="textDarkOnPrimary">#6e4fdb</color>
     <color name="textOnPrimary">#212121</color>
-    <color name="textLightOnPrimary">#757575</color>
     <color name="textOnSecondary">#ffffff</color>
-    <color name="buttonDisabled">#757575</color>
     <color name="scrimText">#80000000</color>
 </resources>

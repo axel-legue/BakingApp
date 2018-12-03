@@ -12,8 +12,8 @@ import java.util.List;
 
 public class StepViewModel extends AndroidViewModel {
 
-    LiveData<List<Step>> recipeSteps;
-    BakingDatabase database;
+    private LiveData<List<Step>> recipeSteps;
+    private BakingDatabase database;
 
 
     public StepViewModel(@NonNull Application application) {

@@ -44,9 +44,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepHolder> {
 
         String stepDescription = mContext.getString(R.string.step_card, i, step.getShortDescription());
         stepHolder.stepShortDescription.setText(stepDescription);
-        stepHolder.cardViewStep.setOnClickListener(view -> {
-                    stepListener.stepSelected(stepList.get(0).getStepId(), stepList.get(stepList.size() - 1).getStepId(), step.getStepId());
-                }
+        stepHolder.cardViewStep.setOnClickListener(view -> stepListener.stepSelected(stepList.get(0).getStepId(), stepList.get(stepList.size() - 1).getStepId(), step.getStepId())
         );
 
     }
@@ -63,7 +61,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepHolder> {
         @BindView(R.id.tv_step)
         TextView stepShortDescription;
 
-        public StepHolder(@NonNull View itemView) {
+        StepHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
