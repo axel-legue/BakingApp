@@ -36,7 +36,7 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
 
     // The Idling Resource which will be null in production.
     @Nullable
-    private SimpleIdlingResource mIdlingResource;
+    SimpleIdlingResource mIdlingResource;
 
 
     private int recipeIdSelected;
@@ -44,7 +44,6 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
     private StepDetailFragment stepDetailFragment;
 
     @BindView(R.id.fab_favorite)
-    private
     FloatingActionButton favoriteButton;
 
     @Override

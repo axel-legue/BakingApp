@@ -49,36 +49,27 @@ public class StepDetailFragment extends Fragment {
 
     @Nullable
     @BindView(R.id.tv_title_recipe)
-    private
     TextView recipeTitle;
     @Nullable
     @BindView(R.id.tv_step_indication)
-    private
     TextView stepIndication;
     @Nullable
     @BindView(R.id.iv_thumbnail)
-    private
     ImageView thumbnail;
     @Nullable
     @BindView(R.id.tv_content_description)
-    private
     TextView longDescription;
     @BindView(R.id.exoplayer)
-    private
     PlayerView playerView;
     @Nullable
     @BindView(R.id.btn_next)
-    private
     Button nextStepButton;
     @Nullable
     @BindView(R.id.btn_previous)
-    private
     Button previousStepButton;
     @BindView(R.id.ll_no_source)
-    private
     LinearLayout noVideoSource;
     @BindView(R.id.pb_mediaSource)
-    private
     ProgressBar loadingMedia;
 
     private int mFirsStepId;

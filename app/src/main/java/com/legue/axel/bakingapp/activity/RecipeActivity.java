@@ -30,7 +30,6 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.R
     private static final String TAG = RecipeActivity.class.getName();
 
     @BindView(R.id.rv_recipe)
-    private
     RecyclerView recipeRecyclerView;
 
     private List<Recipe> recipeList;

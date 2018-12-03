@@ -40,19 +40,19 @@ public class StepsFragment extends Fragment {
 
     private Unbinder unbinder;
     @BindView(R.id.iv_recipe)
-    private
+
     ImageView mRecipeImage;
     @BindView(R.id.tv_recipe_name)
-    private
+
     TextView mRecipeTitle;
     @BindView(R.id.tv_servings)
-    private
+
     TextView mRecipeServings;
     @BindView(R.id.rv_ingredients)
-    private
+
     RecyclerView mIngredientsRecyclerView;
     @BindView(R.id.rv_description)
-    private
+
     RecyclerView mStepsRecyclerView;
 
 
