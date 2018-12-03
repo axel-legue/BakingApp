@@ -19,6 +19,10 @@ Through this project, i will:
 - Write Android UI test with Espresso
 - Use of Architecture Component (Room / LiveData / ViewModel)
 
+## Look
+
+![Image](https://github.com/skittles31/BakingApp/blob/master/Sans%20titre.png)
+
 
 ## Usefull Resources
  - Detect Tablet : 
