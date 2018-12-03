@@ -51,7 +51,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
         quantity = decimalFormat.format(ingredient.getQuantity());
         if (ingredient.getName() != null && ingredient.getName().length() > 0) {
-            name = ingredient.getName();
+            name = ingredient.getName().toLowerCase();
         } else {
             name = "unknown";
         }

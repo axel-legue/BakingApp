@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">bakingApp</string>
     <string name="ingredient_quantity">\u2022 %1$s %2$s %3$s</string>
+    <string name="ingredient_quantity_widget"> %1$s %2$s %3$s</string>
     <string name="servings">%1$d persons</string>
     <string name="step_card">%1$d : %2$s</string>
     <string name="ingredients">Ingredients</string>

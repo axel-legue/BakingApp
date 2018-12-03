@@ -152,6 +152,15 @@ public class StepsActivity extends AppCompatActivity implements StepsFragment.St
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Intent intent = new Intent(this, RecipeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    @Override
     public void dataLoaded() {
         if (mIdlingResource != null) {
             mIdlingResource.setIdleState(true);

@@ -15,6 +15,8 @@ import com.legue.axel.bakingapp.R;
 import com.legue.axel.bakingapp.activity.StepsActivity;
 import com.legue.axel.bakingapp.database.model.Recipe;
 
+import java.text.DecimalFormat;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**

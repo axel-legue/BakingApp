@@ -15,6 +15,7 @@ import com.legue.axel.bakingapp.database.BakingDatabase;
 import com.legue.axel.bakingapp.database.model.Ingredient;
 import com.legue.axel.bakingapp.database.model.Recipe;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -77,10 +78,28 @@ class RecipeRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
     public RemoteViews getViewAt(int i) {
         Log.i(TAG, "getViewAt: ");
         Ingredient ingredient = mIngredientList.get(i);
-
+        String measure = null;
+        String quantity;
+        String name;
         RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.ingredient_widget_item);
-        views.setTextViewText(R.id.tv_ingredient_name, ingredient.getName());
 
+        if (ingredient.getMeasure() != null && ingredient.getMeasure().length() > 0) {
+            if (Constants.measureMap.containsKey(ingredient.getMeasure())) {
+                measure = Constants.measureMap.get(ingredient.getMeasure());
+            }
+        }
+
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+        quantity = decimalFormat.format(ingredient.getQuantity());
+        if (ingredient.getName() != null && ingredient.getName().length() > 0) {
+            name = ingredient.getName().toLowerCase();
+        } else {
+            name = "unknown";
+        }
+
+        String ingredientText = mContext.getString(R.string.ingredient_quantity_widget, quantity, measure, name);
+
+        views.setTextViewText(R.id.tv_ingredient_name, ingredientText);
 
         // Fill in the onClick PendingIntent Template using the specific RecipeId
         // for each item individually.

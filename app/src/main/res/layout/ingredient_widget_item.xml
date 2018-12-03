@@ -12,6 +12,7 @@
         android:id="@+id/tv_ingredient_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/smallMargin"
         android:textAlignment="textStart"
         android:textColor="@color/textOnPrimary"
         android:textSize="@dimen/regularText"
