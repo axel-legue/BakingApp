@@ -28,12 +28,12 @@ Through this project, i will:
 ![Image](https://github.com/skittles31/BakingApp/blob/master/widget_story.png) <br/>
 
 ## Usefull Resources
- - Detect Tablet : 
- https://developer.android.com/training/multiscreen/screensizes#TaskUseSWQuali
- https://stackoverflow.com/questions/9279111/determine-if-the-device-is-a-smartphone-or-tablet
+ - Detect Tablet : <br/>
+ https://developer.android.com/training/multiscreen/screensizes#TaskUseSWQuali <br/>
+ https://stackoverflow.com/questions/9279111/determine-if-the-device-is-a-smartphone-or-tablet <br/>
 
-- Theme : 
-https://stackoverflow.com/questions/29957822/changing-background-and-text-color-of-appcompat-light-darkactionbar-theme-on-and/29958006
+- Theme : <br/>
+https://stackoverflow.com/questions/29957822/changing-background-and-text-color-of-appcompat-light-darkactionbar-theme-on-and/29958006 <br/>
 
-- ExoPlayerFullScreen :
-https://medium.com/fungjai/playing-video-by-exoplayer-b97903be0b33
+- ExoPlayerFullScreen : <br/>
+https://medium.com/fungjai/playing-video-by-exoplayer-b97903be0b33 <br/>
