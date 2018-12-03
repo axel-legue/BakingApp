@@ -20,12 +20,12 @@ Through this project, i will:
 - Use of Architecture Component (Room / LiveData / ViewModel)
 
 ## Look
-- Phone Story
-![Image](https://github.com/skittles31/BakingApp/blob/master/phone_story_1.png)
-- ExoPlayer FullScreen
-![Image](https://github.com/skittles31/BakingApp/blob/master/full_screen_story.png)
-- Widget
-![Image](https://github.com/skittles31/BakingApp/blob/master/widget_story.png)
+- Phone Story <br/>;
+![Image](https://github.com/skittles31/BakingApp/blob/master/phone_story_1.png) <br/>;
+- ExoPlayer FullScreen <br/>;
+![Image](https://github.com/skittles31/BakingApp/blob/master/full_screen_story.png)  <br/>;
+- Widget <br/>;
+![Image](https://github.com/skittles31/BakingApp/blob/master/widget_story.png) <br/>;
 
 ## Usefull Resources
  - Detect Tablet : 
