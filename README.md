@@ -7,7 +7,7 @@ allow a user to select a recipe and see video-guided steps for how to complete i
 ## Why this Project
 
 For create and implement an app where i will be responsible for the design and
-planning steps i need to take to create an a prouction-ready app.
+planning steps i need to take to create an a production-ready app.
 
 ## What Will I Learn?
 Through this project, i will:
