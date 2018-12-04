@@ -37,6 +37,10 @@ public class Constants {
     public static final String KEY_STEPS_DESCRIPTION = "description";
     public static final String KEY_STEPS_VIDEO_URL = "videoURL";
     public static final String KEY_STEPS_THUMBNAIL_URL = "thumbnailURL";
+    public static final String KEY_STEPS_EXO_CURRENT_TIME = "currentTime";
+    public static final String KEY_STEPS_EXO_CURRENT_WINDOW = "currentWindow";
+    public static final String KEY_STEPS_EXO_IS_READY = "isReady";
+    public static final String KEY_STEPS_EXO_VIDEO_URL = "videoURL";
 
     /**
      * Keys for measure

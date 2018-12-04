@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
@@ -22,9 +24,13 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.legue.axel.bakingapp.Constants;
@@ -86,6 +92,11 @@ public class StepDetailFragment extends Fragment {
     private boolean isPortrait;
 
     private int stepSelectedId = -1;
+    private long currentPosition;
+    private boolean isReady = true;
+    private String videoURL;
+    // bandwidth meter to measure and estimate bandwidth
+    private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
 
     private Player.EventListener eventListener = new Player.EventListener() {
         @Override
@@ -167,6 +178,7 @@ public class StepDetailFragment extends Fragment {
         }
 
         if (savedInstanceState != null) {
+            Log.i(TAG, "onCreateView: savedInstanceState NOT NULL  ");
             if (savedInstanceState.containsKey(Constants.KEY_STEPS_ID)) {
                 stepSelectedId = savedInstanceState.getInt(Constants.KEY_STEPS_ID);
             }
@@ -176,6 +188,22 @@ public class StepDetailFragment extends Fragment {
             if (savedInstanceState.containsKey(Constants.KEY_LAST_STEP_ID)) {
                 mLastStepId = savedInstanceState.getInt(Constants.KEY_LAST_STEP_ID);
             }
+            if (savedInstanceState.containsKey(Constants.KEY_STEPS_EXO_VIDEO_URL)) {
+                videoURL = savedInstanceState.getString(Constants.KEY_STEPS_EXO_VIDEO_URL, "");
+            }
+            if (savedInstanceState.containsKey(Constants.KEY_STEPS_EXO_CURRENT_TIME)) {
+                currentPosition = savedInstanceState.getLong(Constants.KEY_STEPS_EXO_CURRENT_TIME, 0);
+            }
+            if (savedInstanceState.containsKey(Constants.KEY_STEPS_EXO_IS_READY)) {
+                isReady = savedInstanceState.getBoolean(Constants.KEY_STEPS_EXO_IS_READY);
+            }
+            Log.i(TAG, "onSaveInstanceState KEY_STEPS_ID: " + stepSelectedId);
+            Log.i(TAG, "onSaveInstanceState KEY_FIRST_STEP_ID: " + mFirsStepId);
+            Log.i(TAG, "onSaveInstanceState KEY_LAST_STEP_ID: " + mLastStepId);
+            Log.i(TAG, "onSaveInstanceState KEY_STEPS_EXO_VIDEO_URL: " + videoURL);
+            Log.i(TAG, "onSaveInstanceState KEY_STEPS_EXO_CURRENT_TIME: " + currentPosition);
+            Log.i(TAG, "onSaveInstanceState KEY_STEPS_EXO_IS_READY: " + isReady);
+
         }
         unbinder = ButterKnife.bind(this, view);
         return view;
@@ -193,27 +221,59 @@ public class StepDetailFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG, "onStart: ");
+//        if (player != null) {
+//            player.setPlayWhenReady(isReady);
+//            player.seekTo(currentPosition);
+//            Log.i(TAG, "onStart KEY_STEPS_EXO_CURRENT_TIME: " + currentPosition);
+//            Log.i(TAG, "onStart KEY_STEPS_EXO_IS_READY: " + isReady);
+//        } else {
+//            initializePlayer2();
+//        }
+        initializePlayer2();
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         checkConfiguration();
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Log.i(TAG, "onPause: ");
+        releasePlayer();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
-        if (player != null) {
-            player.release();
-        }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Step data
         outState.putInt(Constants.KEY_STEPS_ID, stepSelectedId);
         outState.putInt(Constants.KEY_FIRST_STEP_ID, mFirsStepId);
         outState.putInt(Constants.KEY_LAST_STEP_ID, mLastStepId);
+        outState.putString(Constants.KEY_STEPS_EXO_VIDEO_URL, videoURL);
 
-        super.onSaveInstanceState(outState);
+        // ExoPlayer data
+        outState.putLong(Constants.KEY_STEPS_EXO_CURRENT_TIME, currentPosition);
+        outState.putBoolean(Constants.KEY_STEPS_EXO_IS_READY, isReady);
+
+        Log.i(TAG, "onSaveInstanceState KEY_STEPS_ID: " + stepSelectedId);
+        Log.i(TAG, "onSaveInstanceState KEY_FIRST_STEP_ID: " + mFirsStepId);
+        Log.i(TAG, "onSaveInstanceState KEY_LAST_STEP_ID: " + mLastStepId);
+        Log.i(TAG, "onSaveInstanceState KEY_STEPS_EXO_VIDEO_URL: " + videoURL);
+        Log.i(TAG, "onSaveInstanceState KEY_STEPS_EXO_CURRENT_TIME: " + currentPosition);
+        Log.i(TAG, "onSaveInstanceState KEY_STEPS_EXO_IS_READY: " + isReady);
+
     }
 
     public void updateDetails(int firstStepId, int lastStepId, int stepId) {
@@ -232,7 +292,8 @@ public class StepDetailFragment extends Fragment {
             stepViewModel.getStepById(stepSelectedId).observe(this, step -> {
                 if (step != null) {
                     stepSelected = step;
-                    initializePlayer(stepSelected.getVideoURL());
+                    videoURL = stepSelected.getVideoURL();
+                    initializePlayer2();
                     getRecipe(stepSelected.getRecipeId());
                     changeUiInfo(stepSelected);
                 }
@@ -241,7 +302,7 @@ public class StepDetailFragment extends Fragment {
     }
 
     private void initData() {
-
+        Log.i(TAG, "initData: ");
         if (stepSelectedId == mFirsStepId && previousStepButton != null) {
             previousStepButton.setVisibility(View.GONE);
         }
@@ -252,19 +313,25 @@ public class StepDetailFragment extends Fragment {
 
         if (stepSelectedId != -1) {
             displayStepIndicator();
+
             stepViewModel.getStepById(stepSelectedId).observe(this, step -> {
                 if (step != null) {
                     stepSelected = step;
-                    initializePlayer(stepSelected.getVideoURL());
+                    videoURL = stepSelected.getVideoURL();
+                    Log.i(TAG, "initData recipe loaded from Room: ");
+                    initializePlayer2();
                     getRecipe(stepSelected.getRecipeId());
                     changeUiInfo(stepSelected);
                 }
             });
+
         }
     }
 
     private void clickListener() {
         nextStepButton.setOnClickListener(view -> {
+            isReady = true;
+            currentPosition = 0;
             if (player != null) {
                 player.stop();
             }
@@ -285,6 +352,8 @@ public class StepDetailFragment extends Fragment {
         });
 
         previousStepButton.setOnClickListener(view -> {
+            isReady = true;
+            currentPosition = 0;
             if (player != null) {
                 player.stop();
             }
@@ -319,20 +388,20 @@ public class StepDetailFragment extends Fragment {
 
     /**
      * Only available for Mobile
-     *
      */
     private void loadStep(int stepSelectedId) {
         stepViewModel.getStepById(stepSelectedId).observe(this, step -> {
             if (step != null) {
                 stepSelected = step;
-                initializePlayer(stepSelected.getVideoURL());
+                videoURL = stepSelected.getVideoURL();
+                initializePlayer2();
                 changeUiInfo(stepSelected);
             }
         });
     }
 
     private boolean isUrlValid(String URL) {
-        return stepSelected.getVideoURL() != null && Patterns.WEB_URL.matcher(URL).matches();
+        return Patterns.WEB_URL.matcher(URL).matches();
     }
 
     /**
@@ -358,24 +427,24 @@ public class StepDetailFragment extends Fragment {
 
     }
 
-    /**
-     * Initialise player
-     */
-    private void initializePlayer(String videoURI) {
-        loadingMedia.setVisibility(View.VISIBLE);
-        if (player == null) {
-            player = ExoPlayerFactory.newSimpleInstance(mContext);
-        }
 
-        if (playerView.getPlayer() == null) {
-            playerView.setPlayer(player);
+    private void initializePlayer2() {
+        Log.i(TAG, "initializePlayer2: ");
+        loadingMedia.setVisibility(View.VISIBLE);
+
+        if (player == null) {
+            player = ExoPlayerFactory.newSimpleInstance(
+                    mContext,
+                    new DefaultRenderersFactory(mContext),
+                    new DefaultTrackSelector(),
+                    new DefaultLoadControl()
+            );
         }
 
         Uri uri;
-
-        if (isUrlValid(videoURI)) {
-            uri = Uri.parse(videoURI);
-            // Produces DataSource instances through which media data is loaded.
+        if (videoURL != null && isUrlValid(videoURL)) {
+            Log.i(TAG, "initializePlayer2 videoURL : " + videoURL);
+            uri = Uri.parse(videoURL);
             DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(mContext,
                     Util.getUserAgent(mContext, mContext.getString(R.string.app_name)));
 
@@ -383,34 +452,92 @@ public class StepDetailFragment extends Fragment {
             // This is the MediaSource representing the media to be played.
             videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
                     .createMediaSource(uri);
-
-            // Add a listener to receive events from the player.
-            player.addListener(eventListener);
-
-            // Prepare the player with the source.
             player.prepare(videoSource);
-            player.setPlayWhenReady(true);
         } else {
+            Log.i(TAG, "initializePlayer2 videoURL : NOT VALID ");
             noVideoSource.setVisibility(View.VISIBLE);
             playerView.setVisibility(View.GONE);
             loadingMedia.setVisibility(View.GONE);
+        }
 
+        Log.i(TAG, "initializePlayer2 setPlayWhenReady: " + isReady);
+        Log.i(TAG, "initializePlayer2 seekTo: " + currentPosition);
+        player.addListener(eventListener);
+        playerView.setPlayer(player);
+        player.setPlayWhenReady(isReady);
+        player.seekTo(currentPosition);
+
+
+    }
+
+    private void releasePlayer() {
+        if (player != null) {
+            Log.i(TAG, "releasePlayer NOT NULL  ");
+            currentPosition = player.getCurrentPosition();
+            isReady = player.getPlayWhenReady();
+            Log.i(TAG, "releasePlayer setPlayWhenReady: " + isReady);
+            Log.i(TAG, "releasePlayer seekTo: " + currentPosition);
+            player.release();
+            player = null;
+        } else {
+            Log.i(TAG, "releasePlayer IS NULL  ");
         }
     }
 
+
+//    /**
+//     * Initialise player
+//     */
+//    private void initializePlayer() {
+//        loadingMedia.setVisibility(View.VISIBLE);
+//        if (player == null) {
+////            player = ExoPlayerFactory.newSimpleInstance(mContext);
+//            player = ExoPlayerFactory.newSimpleInstance(mContext, new DefaultRenderersFactory(mContext), new DefaultTrackSelector(), new DefaultLoadControl());
+//        }
+//
+//        if (playerView.getPlayer() == null) {
+//            playerView.setPlayer(player);
+//        }
+//
+//        Uri uri;
+//
+//        if (videoURL != null && isUrlValid(videoURL)) {
+//            uri = Uri.parse(videoURL);
+//            // Produces DataSource instances through which media data is loaded.
+//            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(mContext,
+//                    Util.getUserAgent(mContext, mContext.getString(R.string.app_name)));
+//
+//            MediaSource videoSource;
+//            // This is the MediaSource representing the media to be played.
+//            videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+//                    .createMediaSource(uri);
+//
+//            // Add a listener to receive events from the player.
+//            player.addListener(eventListener);
+//
+//            // Prepare the player with the source.
+//            player.prepare(videoSource, true, false);
+//            player.setPlayWhenReady(isReady);
+//
+////            player.seekToDefaultPosition(currentWindow);
+//            player.seekTo(currentPosition);
+//        } else {
+//            noVideoSource.setVisibility(View.VISIBLE);
+//            playerView.setVisibility(View.GONE);
+//            loadingMedia.setVisibility(View.GONE);
+//
+//        }
+//    }
+
     private void checkConfiguration() {
         boolean isTablet;
-        boolean isLandscape;
         if (recipeTitle == null) {
-            isLandscape = true;
             isTablet = false;
             isPortrait = false;
         } else if (previousStepButton == null) {
-            isLandscape = false;
             isTablet = true;
             isPortrait = false;
         } else {
-            isLandscape = false;
             isTablet = false;
             isPortrait = true;
         }
