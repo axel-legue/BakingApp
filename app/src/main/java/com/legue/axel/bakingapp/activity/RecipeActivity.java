@@ -3,8 +3,14 @@ package com.legue.axel.bakingapp.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.legue.axel.bakingapp.BakingApplication;
 import com.legue.axel.bakingapp.Constants;
 import com.legue.axel.bakingapp.R;
 import com.legue.axel.bakingapp.adapter.RecipeAdapter;
@@ -12,6 +18,7 @@ import com.legue.axel.bakingapp.database.BakingDatabase;
 import com.legue.axel.bakingapp.database.DataBaseUtils;
 import com.legue.axel.bakingapp.database.ViewModel.RecipeViewModel;
 import com.legue.axel.bakingapp.database.model.Recipe;
+import com.legue.axel.bakingapp.retrofit.RetrofitHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +38,15 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.R
 
     @BindView(R.id.rv_recipe)
     RecyclerView recipeRecyclerView;
+    @BindView(R.id.pb_loading_recipes)
+    ProgressBar progressBar;
 
     private List<Recipe> recipeList;
     private RecipeAdapter recipeAdapter;
     private SharedPreferences preferences;
+    private BakingApplication application;
+    private JsonObject recipesJson;
+    private BakingDatabase mDatabase;
 
     /**
      * ===========================================================================================
@@ -55,14 +67,15 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.R
 
         ButterKnife.bind(this);
 
-        BakingDatabase mDatabase = BakingDatabase.getsInstance(this);
+        mDatabase = BakingDatabase.getsInstance(this);
 //        AppExecutors.getInstance().getDiskIO().execute(() -> mDatabase.clearAllTables());
 
         preferences = getSharedPreferences("com.legue.axel.bankingapp", MODE_PRIVATE);
+        application = (BakingApplication) getApplication();
         if (!preferences.contains(Constants.KEY_FIRST_RUN)) {
             preferences.edit().putBoolean(Constants.KEY_FIRST_RUN, false).apply();
-            DataBaseUtils dataBaseUtils = new DataBaseUtils(this, mDatabase);
-            dataBaseUtils.fillDatabase();
+            progressBar.setVisibility(View.VISIBLE);
+            RetrofitHelper.getRecipes(Constants.ACTION_COMPLETE, recipeHandler, application);
         }
 
         initData();
@@ -118,4 +131,28 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.R
         return getResources().getBoolean(R.bool.isTablet);
     }
 
+    private Handler recipeHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case Constants.ACTION_COMPLETE:
+                    progressBar.setVisibility(View.INVISIBLE);
+                    if (application.getRecipesString() != null) {
+
+                        DataBaseUtils dataBaseUtils = new DataBaseUtils(application, mDatabase);
+                        dataBaseUtils.fillDatabase(application.getRecipesString());
+                    }
+                    break;
+
+                case Constants.ACTION_ERROR:
+                    progressBar.setVisibility(View.INVISIBLE);
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+
+    };
 }
+
+

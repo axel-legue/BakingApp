@@ -2,6 +2,8 @@ package com.legue.axel.bakingapp.database;
 
 import android.content.Context;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.legue.axel.bakingapp.AppExecutors;
 import com.legue.axel.bakingapp.Constants;
 import com.legue.axel.bakingapp.database.model.Ingredient;
@@ -30,21 +32,19 @@ public class DataBaseUtils {
         this.mDatabase = database;
     }
 
-    public void fillDatabase() {
+    public void fillDatabase(String RecipesJson) {
         recipes = new ArrayList<>();
         ingredients = new ArrayList<>();
         steps = new ArrayList<>();
-        String jsonString;
         try {
-            InputStream inputStream = mContext.getAssets().open("baking.json");
-            int size = inputStream.available();
-            byte[] buffer = new byte[size];
-            inputStream.read(buffer);
-            inputStream.close();
-            jsonString = new String(buffer, "UTF-8");
+//            InputStream inputStream = mContext.getAssets().open("baking.json");
+//            int size = inputStream.available();
+//            byte[] buffer = new byte[size];
+//            inputStream.read(buffer);
+//            inputStream.close();
+//            jsonString = new String(buffer, "UTF-8");
 
-
-            JSONArray jsonArray = new JSONArray(jsonString);
+            JSONArray jsonArray = new JSONArray(RecipesJson);
             if (jsonArray.length() > 0) {
                 insertRecipes(jsonArray);
             }
@@ -54,7 +54,7 @@ public class DataBaseUtils {
                 mDatabase.ingredientDao().insertAllIngredient(ingredients);
                 mDatabase.stepDao().insertAllStep(steps);
             });
-        } catch (IOException | JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }

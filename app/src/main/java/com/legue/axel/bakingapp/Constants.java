@@ -42,6 +42,11 @@ public class Constants {
     public static final String KEY_STEPS_EXO_IS_READY = "isReady";
     public static final String KEY_STEPS_EXO_VIDEO_URL = "videoURL";
 
+    public static final String ERROR = "Error";
+    public static final int ACTION_ERROR = 200;
+    public static final int ACTION_COMPLETE = 201;
+    public static final int ACTION_GET_RECIPE = 202;
+
     /**
      * Keys for measure
      */
