@@ -131,7 +131,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.R
         return getResources().getBoolean(R.bool.isTablet);
     }
 
-    private Handler recipeHandler = new Handler() {
+    private final Handler recipeHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
