@@ -1,7 +1,7 @@
 # Sandwich Club Project Starter Code
 
 ## Project Overview
-In this project, i will create the **Android Baking App** to
+In this project, i have created an application to
 allow a user to select a recipe and see video-guided steps for how to complete it .
 
 ## Why this Project
@@ -9,15 +9,20 @@ allow a user to select a recipe and see video-guided steps for how to complete i
 For create and implement an app where i will be responsible for the design and
 planning steps i need to take to create an a production-ready app.
 
-## What Will I Learn?
-Through this project, i will:
-- Learn how to use MediaPlayer/ExoPlayer t display videos
-- Handle Error cases in Android
-- Add a widget to my app
+## Contains
+Through this project, i use:
+- Architecture Component (Room / LiveData / ViewModel)
+- RxAndroid
+- MediaPlayer/ExoPlayer to display videos
+- Fragment
+- Responsive Design Phone / Tablet
+- RecyclerView
+- CardView
+- Picasso
+- ButterKnife
+- UI test with Espresso
+- Creation of Widget
 - Using thrid party Library
-- Use Fragments to create responsive Design that works on phones and tablets
-- Write Android UI test with Espresso
-- Use of Architecture Component (Room / LiveData / ViewModel)
 
 ## Look
 - Phone Story <br/>
